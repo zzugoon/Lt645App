@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lt645/genNum/genNumber.dart';
+import 'genNum/genNumber.dart';
+import 'destination/destination_view.dart';
+import 'destination/destination.dart';
 
 void main() {
   runApp(const MaterialApp(home: Lt645App()));
