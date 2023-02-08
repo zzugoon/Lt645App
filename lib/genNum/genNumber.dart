@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 class GenNumber {
   dynamic genNum00;
   var genNum01;
-  genNumber() {
 
-  }
+  GenNumber();
 
-  List<dynamic> fn_genNumTypeA(no0, {no1, no2, no3}) {
+  List<int> fn_genNumTypeA(no0, {no1, no2, no3}) {
     const int COUNT_NUM = 6;  // 생성할 번호 갯수
     
     List<int> result = [];// 리턴할 collection List
@@ -18,17 +17,18 @@ class GenNumber {
     for(var i=0; i<COUNT_NUM; i++) {
       genRanNum = Random().nextInt(44);
       genRanNum = genRanNum+1;
-      
-      if(0 < result.indexOf(genRanNum)) {
-        i--;
+
+      // print('indexOf :: ${result.indexOf(genRanNum)}');
+
+      if(0 <= result.indexOf(genRanNum)) {
+        i=i-1;
       }else{
-        // print(result.indexOf(genRanNum));
-        // print("generate Random Number :: ${genRanNum}");
         result.add(genRanNum);
       }
     }
+    // print('정렬전 :: $result');
     result.sort();
-    print(result);
+    print('정렬후 :: $result');
     return result;
   }
 }
