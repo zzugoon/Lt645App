@@ -63,7 +63,7 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     return WillPopScope(
       onWillPop: () async {
         final NavigatorState navigator =
-        navigatorKeys[selectedIndex].currentState!;
+          navigatorKeys[selectedIndex].currentState!;
         if (!navigator.canPop()) {
           return true;
         }
@@ -91,19 +91,26 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
             }).toList(),
           ),
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (int index) {
-            setState(() {
-              selectedIndex = index;
-            });
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: 0,
+          onTap: (value) {
+            print("dsdsdsdsd");
+            print(value);
           },
-          destinations: allDestinations.map((Destination destination) {
-            return NavigationDestination(
-              icon: Icon(destination.icon, color: destination.color),
-              label: destination.title,
-            );
-          }).toList(),
+          items: const <BottomNavigationBarItem> [
+            BottomNavigationBarItem(
+              icon : Icon(Icons.pin),
+              label: '번호생성'
+            ),
+            BottomNavigationBarItem(
+              icon : Icon(Icons.addchart),
+              label: '당첨번호',
+            ),
+            BottomNavigationBarItem(
+              icon : Icon(Icons.person),
+              label: '내 정보'
+            ),
+          ]
         ),
       ),
     );
