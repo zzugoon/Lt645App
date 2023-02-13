@@ -16,6 +16,7 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
+  dynamic rangePercent = '13';
 
   Widget _buildDialog(BuildContext context) {
     return AlertDialog(
@@ -83,7 +84,7 @@ class _RootPageState extends State<RootPage> {
                       }
                       print('click~!!!');
                       setState(() {
-                        // ===== "번호 생성하기 end" =====
+                        // ==== "번호 생성하기 start" ====
                         var minNum = getMinNum.text;
                         var maxNum = getMaxNum.text;
 
@@ -92,7 +93,7 @@ class _RootPageState extends State<RootPage> {
                             int.parse(minNum), int.parse(maxNum)
                             // keyNo1:int.parse("121"), keyNo2:int.parse("qqwe")
                         ));
-                        // ==== "번호 생성하기 start" ====
+                        // ===== "번호 생성하기 end" =====
                       });
                     },
                   ),
@@ -125,26 +126,70 @@ class _RootPageState extends State<RootPage> {
               children: [
                 Flexible(
                   fit: FlexFit.tight,
-                  child: TextField(
-                    controller: getMinNum,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                      labelText: "최소값",
-                    ),
-                  ),
+                  flex: 1,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(right: 10.0),
+                    height: 30,
+                    child: Text("생성 범위"),
+                  )
                 ),
-                sizeBox(10, 0),
                 Flexible(
                   fit: FlexFit.tight,
-                  child: TextField(
-                    controller: getMaxNum,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                      labelText: "최대값",
+                  child: Container(
+                    height: 30,
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: TextField(
+                      controller: getMinNum,
+                      onChanged: (value) {
+                        print("value2 :: $value");
+                      },
+                      style: Theme.of(context).textTheme.bodySmall,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        labelText: "최소값",
+                      ),
                     ),
-                  ),
+                  )
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    height: 30,
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: TextField(
+                      controller: getMaxNum,
+                      onChanged: (value) {
+                        // GenNumber genNumber = GenNumber();
+                        // genNumber.calRate(1, 45);
+                      },
+                      onTapOutside: (value) {
+                        GenNumber genNumber = GenNumber();
+                        genNumber.calRate(1, 45);
+                      },
+                      style: Theme.of(context).textTheme.bodySmall,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        labelText: "최대값",
+                      ),
+                    ),
+                  )
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    height: 30,
+                    child: Text("당첨 확률"),
+                  )
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    height: 30,
+                    child: Text(rangePercent),
+                  )
                 ),
               ],
             ),
@@ -175,7 +220,17 @@ class _RootPageState extends State<RootPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Text(numList[index][0].toString()),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.lime,
+                        shape: BoxShape.circle,
+                        // borderRadius: BorderRadius.circular(30)
+                      ),
+                      child: Text(numList[index][0].toString())
+                    ),
                     Text(numList[index][1].toString()),
                     Text(numList[index][2].toString()),
                     Text(numList[index][3].toString()),

@@ -25,9 +25,21 @@ class GenNumber {
         result.add(genRanNum);
       }
     }
-
     result.sort();
     print('정렬후 :: $result');
+    return result;
+  }
+
+  double calRate(minNo, maxNo) {
+    double result = 0;
+    var temp = maxNo - minNo + 1;
+
+    for(var i=6; i>0; i--) {
+      result += i / temp;
+      temp = temp--;
+    }
+    print('result :: $result');
+
     return result;
   }
 }
