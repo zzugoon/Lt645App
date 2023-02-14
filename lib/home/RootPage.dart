@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../destination/destination.dart';
 import '../genNum/genNumber.dart';
@@ -16,7 +17,10 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
-  dynamic rangePercent = '13';
+  dynamic rangePercent = '1';
+
+  TextEditingController getMinNum = TextEditingController(text: "1");
+  TextEditingController getMaxNum = TextEditingController(text: "45");
 
   Widget _buildDialog(BuildContext context) {
     return AlertDialog(
@@ -31,9 +35,6 @@ class _RootPageState extends State<RootPage> {
       ],
     );
   }
-
-  TextEditingController getMinNum = TextEditingController(text: "1");
-  TextEditingController getMaxNum = TextEditingController(text: "45");
 
   @override
   void dispose() {
@@ -52,7 +53,14 @@ class _RootPageState extends State<RootPage> {
       textStyle: headlineSmall,
     );
 
+    var minNum = getMinNum.text;
+    var maxNum = getMaxNum.text;
+    GenNumber genNumber = GenNumber();
 
+    var numFormat = NumberFormat('###,###,###,###');
+    rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+
+    bool _expanded = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -109,9 +117,7 @@ class _RootPageState extends State<RootPage> {
                     child: const Text('초기화'),
                     onPressed: () {
                       setState(() {
-                        numList = [['1번','2번','3번','4번','5번','6번']];
-                        getMinNum.text = "1";
-                        getMaxNum.text = "45";
+                        initData();
                       });
                     },
                   ),
@@ -128,10 +134,21 @@ class _RootPageState extends State<RootPage> {
                   fit: FlexFit.tight,
                   flex: 1,
                   child: Container(
-                    alignment: Alignment.centerLeft,
+                    // decoration: BoxDecoration(
+                    //   color: null,
+                    //   border: Border.all(color: Colors.blueGrey, width: 1),
+                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                    // ),
+                    alignment: Alignment.center,
                     padding: EdgeInsets.only(right: 10.0),
                     height: 30,
-                    child: Text("생성 범위"),
+                    child: const Text("생성 범위",
+                      style: TextStyle(
+                        fontFamily: "on_goelip",
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal
+                      )
+                    ),
                   )
                 ),
                 Flexible(
@@ -141,12 +158,24 @@ class _RootPageState extends State<RootPage> {
                     padding: EdgeInsets.only(right: 10.0),
                     child: TextField(
                       controller: getMinNum,
+                      onTapOutside: (value) {
+                        setState(() {
+                          var minNum = getMinNum.text;
+                          var maxNum = getMaxNum.text;
+                          var numFormat = NumberFormat('###,###,###,###');
+                          GenNumber genNumber = GenNumber();
+
+                          rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+                        });
+                      },
                       onChanged: (value) {
                         print("value2 :: $value");
                       },
                       style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 20, fontWeight: FontWeight.normal),
                         labelText: "최소값",
                       ),
                     ),
@@ -160,16 +189,27 @@ class _RootPageState extends State<RootPage> {
                     child: TextField(
                       controller: getMaxNum,
                       onChanged: (value) {
-                        // GenNumber genNumber = GenNumber();
-                        // genNumber.calRate(1, 45);
                       },
                       onTapOutside: (value) {
-                        GenNumber genNumber = GenNumber();
-                        genNumber.calRate(1, 45);
+                        setState(() {
+                          var minNum = getMinNum.text;
+                          var maxNum = getMaxNum.text;
+                          var numFormat = NumberFormat('###,###,###,###');
+                          GenNumber genNumber = GenNumber();
+
+                          rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+                        });
                       },
                       style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        labelStyle: const TextStyle(
+                            fontFamily: "on_goelip",
+                            fontSize: 20,
+                            fontWeight:
+                            FontWeight.normal
+                          ),
                         labelText: "최대값",
                       ),
                     ),
@@ -178,9 +218,15 @@ class _RootPageState extends State<RootPage> {
                 Flexible(
                   fit: FlexFit.tight,
                   child: Container(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.centerRight,
                     height: 30,
-                    child: Text("당첨 확률"),
+                    child: const Text("당첨 확률 : ",
+                        style: TextStyle(
+                            fontFamily: "on_goelip",
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal
+                        )
+                    ),
                   )
                 ),
                 Flexible(
@@ -188,7 +234,13 @@ class _RootPageState extends State<RootPage> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     height: 30,
-                    child: Text(rangePercent),
+                    child: Text('1 / $rangePercent',
+                      style: const TextStyle(
+                        fontFamily: "on_goelip",
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal
+                      )
+                    ),
                   )
                 ),
               ],
@@ -201,7 +253,7 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  //wiget
+  //wiget sizeBox
   sizeBox(width, heights) {
     return SizedBox(width: width ,height: heights);
   }
@@ -225,7 +277,7 @@ class _RootPageState extends State<RootPage> {
                       height: 30,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.lime,
+                        color: Colors.yellowAccent,
                         shape: BoxShape.circle,
                         // borderRadius: BorderRadius.circular(30)
                       ),
@@ -308,5 +360,11 @@ class _RootPageState extends State<RootPage> {
         ],
       ),
     );
+  }
+
+  initData() {
+    numList = [['1번','2번','3번','4번','5번','6번']];
+    getMinNum.text = "1";
+    getMaxNum.text = "45";
   }
 }

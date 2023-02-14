@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class GenNumber {
   dynamic testDynamicNo;
@@ -32,14 +33,29 @@ class GenNumber {
 
   double calRate(minNo, maxNo) {
     double result = 0;
-    var temp = maxNo - minNo + 1;
+    int childNo = 1;
+    int? parentNo = 1;
 
-    for(var i=6; i>0; i--) {
-      result += i / temp;
-      temp = temp--;
+    for(var i=0; i<6; i++) {
+      childNo = (i!=0) ? childNo*(i+1) : 1;
+      parentNo = (parentNo!*(maxNo-minNo-i+1)) as int?;
     }
-    print('result :: $result');
+
+    result = parentNo!/childNo;
+    // print('minNo :: $minNo / maxNo :: $maxNo');
+    // print('childNo :: $childNo / parentNo :: $parentNo');
+    // print('result :: $result');
 
     return result;
+  }
+
+  /*천단위 콤마*/
+  thousands_separators(value){
+    try{
+      var numFormat = NumberFormat('###,###,###,###');
+      return numFormat.format(value);
+    }catch(e) {
+      return 0;
+    }
   }
 }
