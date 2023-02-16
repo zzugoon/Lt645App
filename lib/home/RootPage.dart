@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lt645/model/BallNumberImage.dart';
 
 import '../destination/destination.dart';
 import '../genNum/genNumber.dart';
@@ -59,8 +60,6 @@ class _RootPageState extends State<RootPage> {
 
     var numFormat = NumberFormat('###,###,###,###');
     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
-
-    bool _expanded = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -247,6 +246,21 @@ class _RootPageState extends State<RootPage> {
             ),
           ),
           sizeBox(0, 10),
+          Container(
+            height: 50,
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                ballNoImage(1),
+                ballNoImage(2),
+                ballNoImage(3),
+                ballNoImage(4),
+                ballNoImage(5),
+                ballNoImage(6),
+              ],
+            )
+          ),
           listView(),
         ],
       )
@@ -366,5 +380,14 @@ class _RootPageState extends State<RootPage> {
     numList = [['1번','2번','3번','4번','5번','6번']];
     getMinNum.text = "1";
     getMaxNum.text = "45";
+  }
+
+  ballNoImage(index) {
+    BallNumberImage bni = BallNumberImage();
+    return SizedBox(
+        width: 40,
+        height: 40,
+        child: Image.asset(bni.getBallImageName(index))
+    );
   }
 }
