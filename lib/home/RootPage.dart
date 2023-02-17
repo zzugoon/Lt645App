@@ -82,7 +82,7 @@ class _RootPageState extends State<RootPage> {
                     child: const Text('번호 생성'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[700],
-                      minimumSize: Size(50, 50)
+                      minimumSize: Size(50, 50),
                     ),
                     onPressed: () {
                       if(numList.length >= 6) {
@@ -121,6 +121,21 @@ class _RootPageState extends State<RootPage> {
                     },
                   ),
                 ),
+                sizeBox(10, 0),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: ElevatedButton(
+                    style: FilledButton.styleFrom(
+                        backgroundColor: Colors.grey[600],
+                        minimumSize: Size(50, 50)
+                    ),
+                    child: const Text('저장'),
+                    onPressed: () {
+                      setState(() {
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -133,11 +148,6 @@ class _RootPageState extends State<RootPage> {
                   fit: FlexFit.tight,
                   flex: 1,
                   child: Container(
-                    // decoration: BoxDecoration(
-                    //   color: null,
-                    //   border: Border.all(color: Colors.blueGrey, width: 1),
-                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                    // ),
                     alignment: Alignment.center,
                     padding: EdgeInsets.only(right: 10.0),
                     height: 30,
@@ -174,7 +184,7 @@ class _RootPageState extends State<RootPage> {
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                        labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 20, fontWeight: FontWeight.normal),
+                        labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
                         labelText: "최소값",
                       ),
                     ),
@@ -205,7 +215,7 @@ class _RootPageState extends State<RootPage> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
                         labelStyle: const TextStyle(
                             fontFamily: "on_goelip",
-                            fontSize: 20,
+                            fontSize: 25,
                             fontWeight:
                             FontWeight.normal
                           ),
@@ -246,9 +256,74 @@ class _RootPageState extends State<RootPage> {
             ),
           ),
           sizeBox(0, 10),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Table(
+              border: TableBorder.all(
+                color: Colors.black26,
+                width: 2.0,
+              ),
+              columnWidths: const <int, TableColumnWidth>{
+                0: FixedColumnWidth(40),
+                1: FixedColumnWidth(60),
+                2: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: <TableRow>[
+                // TableRow(
+                //   children: <Widget>[
+                //     Container(
+                //       height: 32,
+                //       color: Colors.green,
+                //     ),
+                //     TableCell(
+                //       verticalAlignment: TableCellVerticalAlignment.top,
+                //       child: Container(
+                //         height: 32,
+                //         width: 32,
+                //         color: Colors.red,
+                //       ),
+                //     ),
+                //     Container(
+                //       height: 64,
+                //       color: Colors.blue,
+                //     ),
+                //   ],
+                // ),
+                // TableRow(
+                //   decoration: const BoxDecoration(
+                //     color: Colors.grey,
+                //   ),
+                //   children: <Widget>[
+                //     Container(
+                //       height: 64,
+                //       width: 128,
+                //       color: Colors.purple,
+                //     ),
+                //     Container(
+                //       height: 32,
+                //       color: Colors.yellow,
+                //     ),
+                //     Center(
+                //       child: Container(
+                //         height: 32,
+                //         width: 32,
+                //         color: Colors.orange,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                createTableRow('A', '자동'),
+                createTableRow('B', '자동'),
+                createTableRow('C', '자동'),
+                createTableRow('D', '자동'),
+                createTableRow('E', '자동'),
+              ],
+            ),
+          ),
           Container(
             height: 50,
-            margin: EdgeInsets.only(left: 20, right: 20),
+            margin: const EdgeInsets.only(left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -388,6 +463,158 @@ class _RootPageState extends State<RootPage> {
         width: 40,
         height: 40,
         child: Image.asset(bni.getBallImageName(index))
+    );
+  }
+
+  createTableRow(fr, se) {
+    return TableRow (
+      children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          height: 50,
+          color: Colors.black12,
+          child: Text(fr,
+            style: TextStyle(
+              fontFamily: "on_goelip",
+              fontSize: 30,
+              fontWeight: FontWeight.normal
+            ),
+          ),
+        ),
+        TableCell(
+          verticalAlignment: TableCellVerticalAlignment.fill,
+          child: Container(
+            alignment: Alignment.center,
+            width: null,
+            color: Colors.white,
+            child: Text(se,
+              style: TextStyle(
+                fontFamily: "on_goelip",
+                fontSize: 25,
+                fontWeight: FontWeight.normal
+              ),
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 50,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.amber,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("2",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "on_goelip",
+                    fontSize: 30,
+                    fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("14",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "on_goelip",
+                    fontSize: 30,
+                    fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("18",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "on_goelip",
+                    fontSize: 30,
+                    fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("29",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "on_goelip",
+                    fontSize: 30,
+                    fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("38",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "on_goelip",
+                      fontSize: 30,
+                      fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+              Container(
+                height: 30,
+                width: 30,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.purple,
+                  shape: BoxShape.circle,
+                  // borderRadius: BorderRadius.circular(30)
+                ),
+                child: Text("45",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "on_goelip",
+                      fontSize: 30,
+                      fontWeight: FontWeight.normal
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

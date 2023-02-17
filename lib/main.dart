@@ -16,7 +16,7 @@ class Lt645App extends StatefulWidget {
 
 class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> {
   static const List<Destination> allDestinations = <Destination>[
-    Destination(0, 'Home', Icons.home, Colors.teal),
+    Destination(0, 'Home', Icons.home, Colors.cyan),
     Destination(1, '6/45', Icons.filter_6, Colors.cyan),
     Destination(2, 'Info', Icons.info, Colors.orange),
     Destination(3, 'My', Icons.person, Colors.blue),
