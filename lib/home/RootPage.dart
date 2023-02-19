@@ -484,13 +484,20 @@ class _RootPageState extends State<RootPage> {
       decoration: BoxDecoration(
         color: Color(numColor),
         shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
+          stops: [0.2, 0.9],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft
+
+        )
         // borderRadius: BorderRadius.circular(30)
       ),
       child: Text(numText,
         textAlign: TextAlign.center,
         style: const TextStyle(
           color: Colors.white,
-          fontFamily: "wel_Bold",
+          fontFamily: "wel_Regular",
           fontSize: 13,
           fontWeight: FontWeight.normal
         ),

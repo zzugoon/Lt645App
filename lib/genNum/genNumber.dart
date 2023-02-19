@@ -36,15 +36,15 @@ class GenNumber {
       map['number'] = i.toString();
 
       if(i < 11) {
-        map['color'] = 0xFFFFD740;
+        map['color'] = 0xFFFFAB00;
       }else if(10<i && i<21){
-        map['color'] = 0xFF2196F3;
+        map['color'] = 0xFF0D47A1;
       }else if(20<i && i<31){
-        map['color'] = 0xFFF44336;
+        map['color'] = 0xFFC62828;
       }else if(30<i  && i<41){
-        map['color'] = 0xFF9E9E9E;
+        map['color'] = 0xFF424242;
       }else if(40<i  && i<=45){
-        map['color'] = 0xFF4CAF50;
+        map['color'] = 0xFF2E7D32;
       }
 
       resultMap.add(map);
