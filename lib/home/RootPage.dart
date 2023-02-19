@@ -18,7 +18,16 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
+  List<dynamic> numMapList = [];
   dynamic rangePercent = '1';
+
+  List<Map> tableHeader = [
+    {'col' : 'A', 'type' : '자동'}
+    ,{'col' : 'B', 'type' : '자동'}
+    ,{'col' : 'C', 'type' : '자동'}
+    ,{'col' : 'D', 'type' : '자동'}
+    ,{'col' : 'E', 'type' : '자동'}
+  ];
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
@@ -85,21 +94,19 @@ class _RootPageState extends State<RootPage> {
                       minimumSize: Size(50, 50),
                     ),
                     onPressed: () {
-                      if(numList.length >= 6) {
+                      if(numMapList.length > 4) {
                         _cupertinoDialog(context);
                         return;
                       }
-                      print('click~!!!');
+
                       setState(() {
                         // ==== "번호 생성하기 start" ====
                         var minNum = getMinNum.text;
                         var maxNum = getMaxNum.text;
 
                         GenNumber genNumber = GenNumber();
-                        numList.add(genNumber.fn_genNumTypeA(
-                            int.parse(minNum), int.parse(maxNum)
-                            // keyNo1:int.parse("121"), keyNo2:int.parse("qqwe")
-                        ));
+                        numMapList.add(
+                            genNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
                         // ===== "번호 생성하기 end" =====
                       });
                     },
@@ -256,6 +263,22 @@ class _RootPageState extends State<RootPage> {
             ),
           ),
           sizeBox(0, 10),
+          Container(
+              height: 50,
+              margin: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  ballNoImage(1),
+                  ballNoImage(2),
+                  ballNoImage(3),
+                  ballNoImage(4),
+                  ballNoImage(5),
+                  ballNoImage(6),
+                ],
+              )
+          ), //*temp*
+          sizeBox(0, 10),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Table(
@@ -270,73 +293,12 @@ class _RootPageState extends State<RootPage> {
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: <TableRow>[
-                // TableRow(
-                //   children: <Widget>[
-                //     Container(
-                //       height: 32,
-                //       color: Colors.green,
-                //     ),
-                //     TableCell(
-                //       verticalAlignment: TableCellVerticalAlignment.top,
-                //       child: Container(
-                //         height: 32,
-                //         width: 32,
-                //         color: Colors.red,
-                //       ),
-                //     ),
-                //     Container(
-                //       height: 64,
-                //       color: Colors.blue,
-                //     ),
-                //   ],
-                // ),
-                // TableRow(
-                //   decoration: const BoxDecoration(
-                //     color: Colors.grey,
-                //   ),
-                //   children: <Widget>[
-                //     Container(
-                //       height: 64,
-                //       width: 128,
-                //       color: Colors.purple,
-                //     ),
-                //     Container(
-                //       height: 32,
-                //       color: Colors.yellow,
-                //     ),
-                //     Center(
-                //       child: Container(
-                //         height: 32,
-                //         width: 32,
-                //         color: Colors.orange,
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                createTableRow('A', '자동'),
-                createTableRow('B', '자동'),
-                createTableRow('C', '자동'),
-                createTableRow('D', '자동'),
-                createTableRow('E', '자동'),
+                for(var i=0; i<tableHeader.length; i++)
+                  createTableRow(tableHeader[i]['col'], tableHeader[i]['type'], i),
               ],
             ),
           ),
-          Container(
-            height: 50,
-            margin: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                ballNoImage(1),
-                ballNoImage(2),
-                ballNoImage(3),
-                ballNoImage(4),
-                ballNoImage(5),
-                ballNoImage(6),
-              ],
-            )
-          ),
-          listView(),
+          // listView(), //***** temp *****
         ],
       )
     );
@@ -452,7 +414,7 @@ class _RootPageState extends State<RootPage> {
   }
 
   initData() {
-    numList = [['1번','2번','3번','4번','5번','6번']];
+    numMapList = [];
     getMinNum.text = "1";
     getMaxNum.text = "45";
   }
@@ -466,7 +428,7 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  createTableRow(fr, se) {
+  createTableRow(fr, se, rowNo) {
     return TableRow (
       children: <Widget>[
         Container(
@@ -503,118 +465,35 @@ class _RootPageState extends State<RootPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.amber,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("2",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "on_goelip",
-                    fontSize: 30,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("14",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "on_goelip",
-                    fontSize: 30,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("18",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "on_goelip",
-                    fontSize: 30,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("29",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "on_goelip",
-                    fontSize: 30,
-                    fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("38",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "on_goelip",
-                      fontSize: 30,
-                      fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
-              Container(
-                height: 30,
-                width: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.purple,
-                  shape: BoxShape.circle,
-                  // borderRadius: BorderRadius.circular(30)
-                ),
-                child: Text("45",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "on_goelip",
-                      fontSize: 30,
-                      fontWeight: FontWeight.normal
-                  ),
-                ),
-              ),
+              for(var i=1; i<=numMapList.length; i++)
+                if(numMapList.length == rowNo+i)
+                  for(var j=0; j<numMapList[rowNo].length; j++)
+                    numberRow(numMapList[rowNo][j]['color'], numMapList[rowNo][j]['number']),
             ],
           ),
-        ),
+        )
       ],
+    );
+  }
+
+  Widget numberRow(numColor, numText) {
+    return Container(
+      height: 30,
+      width: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Color(numColor),
+        shape: BoxShape.circle,
+        // borderRadius: BorderRadius.circular(30)
+      ),
+      child: Text(numText,
+        style: const TextStyle(
+            color: Colors.white,
+            fontFamily: "wel_Bold",
+            fontSize: 15,
+            fontWeight: FontWeight.normal
+        ),
+      ),
     );
   }
 }

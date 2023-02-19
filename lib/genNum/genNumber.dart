@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,10 +8,11 @@ class GenNumber {
   dynamic testDynamicNo;
   var testVarNo;
 
-  List<int> fn_genNumTypeA(int minNo, int maxNo, {keyNo1, keyNo2}) {
+  List<Map> fn_genNumTypeA(int minNo, int maxNo, {keyNo1, keyNo2}) {
     const int COUNT_NUM = 6;  // 생성할 번호 갯수
     
-    List<int> result = [];    // 리턴할 collection List
+    List<int> ranNumList = [];    // 리턴할 collection List
+    List<Map> resultMap = [];
     int genRanNum;            // 생성된 번호 변수
     int keyNo;                // 생성할 번호 범위(max)
 
@@ -20,15 +22,36 @@ class GenNumber {
       genRanNum = Random().nextInt(keyNo);
       genRanNum = genRanNum + minNo;
 
-      if(0 <= result.indexOf(genRanNum)) {
+      if(0 <= ranNumList.indexOf(genRanNum)) {
         i=i-1;
       }else{
-        result.add(genRanNum);
+        ranNumList.add(genRanNum);
       }
     }
-    result.sort();
-    print('정렬후 :: $result');
-    return result;
+    ranNumList.sort();
+    print('정렬후 :: $ranNumList');
+
+    for(var i in ranNumList) {
+      Map map = {};
+      map['number'] = i.toString();
+
+      if(i < 11) {
+        map['color'] = 0xFFFFD740;
+      }else if(10<i && i<21){
+        map['color'] = 0xFF2196F3;
+      }else if(20<i && i<31){
+        map['color'] = 0xFF795548;
+      }else if(30<i  && i<41){
+        map['color'] = 0xFF9E9E9E;
+      }else if(40<i  && i<=45){
+        map['color'] = 0xFF9C27B0;
+      }
+
+      resultMap.add(map);
+    }
+    print(resultMap);
+
+    return resultMap;
   }
 
   double calRate(minNo, maxNo) {
