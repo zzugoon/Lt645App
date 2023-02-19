@@ -487,11 +487,12 @@ class _RootPageState extends State<RootPage> {
         // borderRadius: BorderRadius.circular(30)
       ),
       child: Text(numText,
+        textAlign: TextAlign.center,
         style: const TextStyle(
-            color: Colors.white,
-            fontFamily: "wel_Bold",
-            fontSize: 15,
-            fontWeight: FontWeight.normal
+          color: Colors.white,
+          fontFamily: "wel_Bold",
+          fontSize: 13,
+          fontWeight: FontWeight.normal
         ),
       ),
     );

@@ -40,11 +40,11 @@ class GenNumber {
       }else if(10<i && i<21){
         map['color'] = 0xFF2196F3;
       }else if(20<i && i<31){
-        map['color'] = 0xFF795548;
+        map['color'] = 0xFFF44336;
       }else if(30<i  && i<41){
         map['color'] = 0xFF9E9E9E;
       }else if(40<i  && i<=45){
-        map['color'] = 0xFF9C27B0;
+        map['color'] = 0xFF4CAF50;
       }
 
       resultMap.add(map);

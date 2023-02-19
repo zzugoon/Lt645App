@@ -106,4 +106,7 @@ flutter:
         - asset: assets/font/on_goelip.ttf
     - family: wel_Bold
       fonts:
-        - asset: assets/font/wel_bold.ttf
+        - asset: assets/font/wel_Bold.ttf
+    - family: wel_Regular
+      fonts:
+        - asset: assets/font/wel_Regular.ttf
