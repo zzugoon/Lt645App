@@ -112,7 +112,7 @@ class _RootPageState extends State<RootPage> {
                     },
                   ),
                 ),
-                sizeBox(10, 0),
+                sizeBox(10.0, 0.0),
                 Flexible(
                   fit: FlexFit.tight,
                   child: ElevatedButton(
@@ -128,7 +128,7 @@ class _RootPageState extends State<RootPage> {
                     },
                   ),
                 ),
-                sizeBox(10, 0),
+                sizeBox(10.0, 0.0),
                 Flexible(
                   fit: FlexFit.tight,
                   child: ElevatedButton(
@@ -262,7 +262,7 @@ class _RootPageState extends State<RootPage> {
               ],
             ),
           ),
-          sizeBox(0, 10),
+          sizeBox(0.0, 10.0),
           Container(
               height: 50,
               margin: const EdgeInsets.only(left: 20, right: 20),
@@ -278,7 +278,7 @@ class _RootPageState extends State<RootPage> {
                 ],
               )
           ), //*temp*
-          sizeBox(0, 10),
+          sizeBox(0.0, 10.0),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Table(
@@ -486,7 +486,7 @@ class _RootPageState extends State<RootPage> {
         shape: BoxShape.circle,
         gradient: LinearGradient(
           colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
-          stops: [0.2, 0.9],
+          stops: [0.1, 0.6],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft
 
