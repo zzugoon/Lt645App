@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'genNum/genNumber.dart';
 import 'destination/destination_view.dart';
 import 'destination/destination.dart';
+import 'info/ListPage.dart';
 
 void main() {
   runApp(const MaterialApp(home: Lt645App()));
@@ -96,6 +97,11 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
           onTap: (value) {
             print("dsdsdsdsd");
             print(value);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ListPage(destination: allDestinations[1])),
+            );
           },
           items: const <BottomNavigationBarItem> [
             BottomNavigationBarItem(

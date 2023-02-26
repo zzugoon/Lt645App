@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 import '../destination/destination.dart';
 import '../genNum/genNumber.dart';
@@ -86,12 +87,12 @@ class _RootPageState extends State<RootPage> {
               children: [
                 Flexible(
                   fit: FlexFit.tight,
-                  flex: 3,
+                  flex: 4,
                   child:ElevatedButton(
                     child: const Text('번호 생성'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[700],
-                      minimumSize: Size(50, 50),
+                      minimumSize: Size(50, 40),
                     ),
                     onPressed: () {
                       if(numMapList.length > 4) {
@@ -115,12 +116,18 @@ class _RootPageState extends State<RootPage> {
                 sizeBox(10.0, 0.0),
                 Flexible(
                   fit: FlexFit.tight,
+                  flex: 2,
                   child: ElevatedButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.grey[600],
-                      minimumSize: Size(50, 50)
+                      minimumSize: Size(50, 40)
                     ),
-                    child: const Text('초기화'),
+                    child: const Text('초기화',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal
+                      )
+                    ),
                     onPressed: () {
                       setState(() {
                         initData();
@@ -131,10 +138,11 @@ class _RootPageState extends State<RootPage> {
                 sizeBox(10.0, 0.0),
                 Flexible(
                   fit: FlexFit.tight,
+                  flex: 2,
                   child: ElevatedButton(
                     style: FilledButton.styleFrom(
                         backgroundColor: Colors.grey[600],
-                        minimumSize: Size(50, 50)
+                        minimumSize: Size(50, 40)
                     ),
                     child: const Text('저장'),
                     onPressed: () {
@@ -173,6 +181,7 @@ class _RootPageState extends State<RootPage> {
                     height: 30,
                     padding: EdgeInsets.only(right: 10.0),
                     child: TextField(
+                      readOnly: true,
                       controller: getMinNum,
                       onTapOutside: (value) {
                         setState(() {
@@ -184,8 +193,8 @@ class _RootPageState extends State<RootPage> {
                           rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
                         });
                       },
-                      onChanged: (value) {
-                        print("value2 :: $value");
+                      onTap: () => {
+                        numberPickerDialog(context)
                       },
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center,
@@ -304,12 +313,13 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  //wiget sizeBox
+  /*=================================
+  ========= widget Start ============
+  =================================*/
   sizeBox(width, heights) {
     return SizedBox(width: width ,height: heights);
   }
 
-  //wiget ListView
   listView() {
     return Container(
       child: Expanded(
@@ -348,6 +358,42 @@ class _RootPageState extends State<RootPage> {
       )
     );
   }
+
+  Widget numberRow(numColor, numText) {
+    return Container(
+      height: 30,
+      width: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          color: Color(numColor),
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+              colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
+              stops: [0.1, 0.6],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft
+
+          )
+        // borderRadius: BorderRadius.circular(30)
+      ),
+      child: Text(numText,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            color: Colors.white,
+            fontFamily: "wel_Regular",
+            fontSize: 13,
+            fontWeight: FontWeight.normal
+        ),
+      ),
+    );
+  }
+
+
+  /*=================================
+  =========== widget End ============
+  ===================================
+  ========== method Start ===========
+  =================================*/
 
   void _flutterDialog() {
     showDialog(
@@ -393,6 +439,47 @@ class _RootPageState extends State<RootPage> {
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('Alert'),
         content: const Text('최대로 생성 가능한 번호는 5개 입니다.'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('확인'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          // CupertinoDialogAction(
+          //   isDestructiveAction: true,
+          //   child: const Text('Yes'),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
+        ],
+      ),
+    );
+  }
+
+  void numberPickerDialog(BuildContext context) {
+    var tempNum = 10;
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Alert'),
+        content: Column(
+          children: <Widget>[
+            NumberPicker(
+              value: tempNum,
+              minValue: 0,
+              maxValue: 100,
+              haptics: true,
+              onChanged: (value) => setState(() {
+                tempNum = value;
+                print(tempNum);
+              }),
+            ),
+            Text('Current value: $tempNum'),
+          ],
+        ),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
@@ -476,32 +563,8 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-  Widget numberRow(numColor, numText) {
-    return Container(
-      height: 30,
-      width: 30,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Color(numColor),
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
-          stops: [0.1, 0.6],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft
 
-        )
-        // borderRadius: BorderRadius.circular(30)
-      ),
-      child: Text(numText,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: "wel_Regular",
-          fontSize: 13,
-          fontWeight: FontWeight.normal
-        ),
-      ),
-    );
-  }
+/*===================================
+  =========== method End ============
+  =================================*/
 }
