@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'genNum/genNumber.dart';
-import 'destination/destination_view.dart';
+import 'destination/destinationView.dart';
 import 'destination/destination.dart';
+import 'home/RootPage.dart';
 import 'info/ListPage.dart';
+import 'my/TextPage.dart';
 
 void main() {
   runApp(const MaterialApp(home: Lt645App()));
@@ -23,6 +25,12 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     Destination(3, 'My', Icons.person, Colors.blue),
   ];
 
+  static List<Widget> pages = <Widget>[
+    RootPage(destination: allDestinations[0]),
+    ListPage(destination: allDestinations[1]),
+    TextPage(destination: allDestinations[2])
+  ];
+
   late final List<GlobalKey<NavigatorState>> navigatorKeys;
   late final List<GlobalKey> destinationKeys;
   late final List<AnimationController> destinationFaders;
@@ -40,22 +48,40 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     return controller;
   }
 
+  _onItemTapped(int index) { // 탭을 클릭했을떄 지정한 페이지로 이동
+    setState(() {
+      selectedIndex = index;
+      //Navigator.pushNamed(context, '/list');
+      switch(index) {
+        case 0:
+          Navigator.pushNamed(context, '/');
+          break;
+        case 1:
+          Navigator.pushNamed(context, '/list');
+          break;
+        case 2:
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TextPage(destination: allDestinations[index])));
+          break;
+        default :
+          break;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    navigatorKeys = List<GlobalKey<NavigatorState>>.generate(
-        allDestinations.length, (int index) => GlobalKey()).toList();
-    destinationFaders = List<AnimationController>.generate(
-        allDestinations.length, (int index) => buildFaderController()).toList();
+    navigatorKeys = List<GlobalKey<NavigatorState>>.generate(allDestinations.length, (int index) => GlobalKey()).toList();
+    destinationFaders = List<AnimationController>.generate(allDestinations.length, (int index) => buildFaderController()).toList();
     destinationFaders[selectedIndex].value = 1.0;
     destinationViews = allDestinations.map((Destination destination) {
       return FadeTransition(
-          opacity: destinationFaders[destination.index]
-              .drive(CurveTween(curve: Curves.fastOutSlowIn)),
-          child: DestinationView(
-            destination: destination,
-            navigatorKey: navigatorKeys[destination.index],
-          ));
+        opacity: destinationFaders[destination.index]
+            .drive(CurveTween(curve: Curves.fastOutSlowIn)),
+        child: DestinationView(
+          destination: destination,
+          navigatorKey: navigatorKeys[destination.index],
+        ));
     }).toList();
   }
 
@@ -63,8 +89,7 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final NavigatorState navigator =
-          navigatorKeys[selectedIndex].currentState!;
+        final NavigatorState navigator = navigatorKeys[selectedIndex].currentState!;
         if (!navigator.canPop()) {
           return true;
         }
@@ -93,15 +118,10 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
+          currentIndex: selectedIndex,
           onTap: (value) {
-            print("dsdsdsdsd");
-            print(value);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ListPage(destination: allDestinations[1])),
-            );
+            print('bottomNav click :: $value');
+            _onItemTapped(value);
           },
           items: const <BottomNavigationBarItem> [
             BottomNavigationBarItem(
@@ -129,6 +149,8 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     }
     super.dispose();
   }
+
+
 }
 
 

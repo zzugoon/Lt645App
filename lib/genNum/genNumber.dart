@@ -65,9 +65,6 @@ class GenNumber {
     }
 
     result = parentNo!/childNo;
-    // print('minNo :: $minNo / maxNo :: $maxNo');
-    // print('childNo :: $childNo / parentNo :: $parentNo');
-    // print('result :: $result');
 
     return result;
   }

@@ -20,8 +20,6 @@ class _RootPageState extends State<RootPage> {
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
   List<dynamic> numMapList = [];
-  dynamic rangePercent = '1';
-
   List<Map> tableHeader = [
     {'col' : 'A', 'type' : '자동'}
     ,{'col' : 'B', 'type' : '자동'}
@@ -29,6 +27,8 @@ class _RootPageState extends State<RootPage> {
     ,{'col' : 'D', 'type' : '자동'}
     ,{'col' : 'E', 'type' : '자동'}
   ];
+
+  dynamic rangePercent = '1';
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
@@ -95,16 +95,21 @@ class _RootPageState extends State<RootPage> {
                       minimumSize: Size(50, 40),
                     ),
                     onPressed: () {
+                      var minNum = getMinNum.text;
+                      var maxNum = getMaxNum.text;
+                      var subNum = int.parse(maxNum) - int.parse(minNum);
+
                       if(numMapList.length > 4) {
-                        _cupertinoDialog(context);
+                        _cupertinoDialog(context, '최대로 생성 가능한 번호는 5개 입니다.');
+                        return;
+                      }
+                      if(subNum < 10) {
+                        _cupertinoDialog(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
                         return;
                       }
 
                       setState(() {
                         // ==== "번호 생성하기 start" ====
-                        var minNum = getMinNum.text;
-                        var maxNum = getMaxNum.text;
-
                         GenNumber genNumber = GenNumber();
                         numMapList.add(
                             genNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
@@ -183,18 +188,18 @@ class _RootPageState extends State<RootPage> {
                     child: TextField(
                       readOnly: true,
                       controller: getMinNum,
-                      onTapOutside: (value) {
-                        setState(() {
-                          var minNum = getMinNum.text;
-                          var maxNum = getMaxNum.text;
-                          var numFormat = NumberFormat('###,###,###,###');
-                          GenNumber genNumber = GenNumber();
-
-                          rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
-                        });
-                      },
+                      // onTapOutside: (value) {
+                      //   setState(() {
+                      //     var minNum = getMinNum.text;
+                      //     var maxNum = getMaxNum.text;
+                      //     var numFormat = NumberFormat('###,###,###,###');
+                      //     GenNumber genNumber = GenNumber();
+                      //
+                      //     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+                      //   });
+                      // },
                       onTap: () => {
-                        numberPickerDialog(context)
+                        numberPickerDialog(context, getMinNum.text, 'min')
                       },
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center,
@@ -213,18 +218,19 @@ class _RootPageState extends State<RootPage> {
                     padding: EdgeInsets.only(right: 10.0),
                     child: TextField(
                       controller: getMaxNum,
-                      onChanged: (value) {
+                      onTap: () => {
+                        numberPickerDialog(context, getMaxNum.text, 'max')
                       },
-                      onTapOutside: (value) {
-                        setState(() {
-                          var minNum = getMinNum.text;
-                          var maxNum = getMaxNum.text;
-                          var numFormat = NumberFormat('###,###,###,###');
-                          GenNumber genNumber = GenNumber();
-
-                          rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
-                        });
-                      },
+                      // onTapOutside: (value) {
+                      //   setState(() {
+                      //     var minNum = getMinNum.text;
+                      //     var maxNum = getMaxNum.text;
+                      //     var numFormat = NumberFormat('###,###,###,###');
+                      //     GenNumber genNumber = GenNumber();
+                      //
+                      //     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+                      //   });
+                      // },
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
@@ -388,7 +394,6 @@ class _RootPageState extends State<RootPage> {
     );
   }
 
-
   /*=================================
   =========== widget End ============
   ===================================
@@ -433,12 +438,12 @@ class _RootPageState extends State<RootPage> {
       });
   }
 
-  void _cupertinoDialog(BuildContext context) {
+  void _cupertinoDialog(BuildContext context, String msg) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('Alert'),
-        content: const Text('최대로 생성 가능한 번호는 5개 입니다.'),
+        content: Text(msg),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
@@ -447,54 +452,63 @@ class _RootPageState extends State<RootPage> {
               Navigator.pop(context);
             },
           ),
-          // CupertinoDialogAction(
-          //   isDestructiveAction: true,
-          //   child: const Text('Yes'),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
         ],
       ),
     );
   }
 
-  void numberPickerDialog(BuildContext context) {
-    var tempNum = 10;
+  void numberPickerDialog(BuildContext context, paramNum, paramType) {
+    var tempNum = int.parse(paramNum);
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Alert'),
-        content: Column(
-          children: <Widget>[
-            NumberPicker(
-              value: tempNum,
-              minValue: 0,
-              maxValue: 100,
-              haptics: true,
-              onChanged: (value) => setState(() {
-                tempNum = value;
-                print(tempNum);
-              }),
-            ),
-            Text('Current value: $tempNum'),
-          ],
+        title: const Text('번호 선택'),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Column(
+              children: <Widget>[
+                NumberPicker(
+                    value: tempNum,
+                    minValue: 1,
+                    maxValue: 45,
+                    haptics: true,
+                    onChanged: (value) {
+                      setState(() => tempNum = value);// to change on widget level state
+                    }
+                ),
+                Text('Current Number: $tempNum'),
+              ],
+            );
+          },
         ),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
-            isDefaultAction: true,
-            child: const Text('확인'),
+            isDestructiveAction: true,
+            child: const Text('취소'),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          // CupertinoDialogAction(
-          //   isDestructiveAction: true,
-          //   child: const Text('Yes'),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('확인'),
+            onPressed: () {
+              if(paramType == 'min') {
+                getMinNum.text = tempNum.toString();
+              } else {
+                getMaxNum.text = tempNum.toString();
+              }
+
+              setState(() {
+                var numFormat = NumberFormat('###,###,###,###');
+                GenNumber genNumber = GenNumber();
+
+                rangePercent = numFormat.format(genNumber.calRate(int.parse(getMinNum.text), int.parse(getMaxNum.text)));
+              });
+
+              Navigator.pop(context);
+            },
+          ),
         ],
       ),
     );
