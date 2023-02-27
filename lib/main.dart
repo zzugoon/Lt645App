@@ -18,6 +18,7 @@ class Lt645App extends StatefulWidget {
 }
 
 class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> {
+
   static const List<Destination> allDestinations = <Destination>[
     Destination(0, 'Home', Icons.home, Colors.cyan),
     Destination(1, '6/45', Icons.filter_6, Colors.cyan),
@@ -26,30 +27,99 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   ];
 
   static List<Widget> pages = <Widget>[
-    RootPage(destination: allDestinations[0]),
+    RootPage(),
     ListPage(destination: allDestinations[1]),
-    TextPage(destination: allDestinations[2])
+    TextPage(destination: allDestinations[2]),
+    TextPage(destination: allDestinations[2]),
   ];
 
   late final List<GlobalKey<NavigatorState>> navigatorKeys;
   late final List<GlobalKey> destinationKeys;
   late final List<AnimationController> destinationFaders;
   late final List<Widget> destinationViews;
+
   int selectedIndex = 0;
 
-  AnimationController buildFaderController() {
-    final AnimationController controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
-    controller.addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.dismissed) {
-        setState(() {}); // Rebuild unselected destinations offstage.
-      }
-    });
-    return controller;
+  // AnimationController buildFaderController() {
+  //   final AnimationController controller = AnimationController(
+  //       vsync: this, duration: const Duration(milliseconds: 200));
+  //   controller.addStatusListener((AnimationStatus status) {
+  //     if (status == AnimationStatus.dismissed) {
+  //       setState(() {}); // Rebuild unselected destinations offstage.
+  //     }
+  //   });
+  //   return controller;
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // navigatorKeys = List<GlobalKey<NavigatorState>>.generate(allDestinations.length, (int index) => GlobalKey()).toList();
+    // destinationFaders = List<AnimationController>.generate(allDestinations.length, (int index) => buildFaderController()).toList();
+    // destinationFaders[selectedIndex].value = 1.0;
+    // destinationViews = allDestinations.map((Destination destination) {
+    //   return FadeTransition(
+    //     opacity: destinationFaders[destination.index]
+    //         .drive(CurveTween(curve: Curves.fastOutSlowIn)),
+    //     child: DestinationView(
+    //       destination: destination,
+    //       navigatorKey: navigatorKeys[destination.index],
+    //     ));
+    // }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 4,
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: Text('Instagram'),
+        // ),
+        bottomNavigationBar: const SizedBox(
+          height: 50,
+          child: TabBar(            
+            indicatorColor: Colors.transparent, // indicator 없애기
+            unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
+            labelColor: Colors.black, //
+            tabs: <Widget>[
+              Tab(
+                icon : Icon(Icons.pin, size: 20.0, ),
+                child: Text('번호생성', style: TextStyle(fontSize: 10.0)),
+              ),
+              Tab(
+                icon : Icon(Icons.addchart, size: 20.0),
+                child: Text('당첨번호', style: TextStyle(fontSize: 10.0)),
+              ),
+              Tab(
+                icon : Icon(Icons.person, size: 20.0),
+                child: Text('내 정보', style: TextStyle(fontSize: 10.0)),
+              ),
+              Tab(
+                icon : Icon(Icons.person, size: 20.0),
+                child: Text('내 정보', style: TextStyle(fontSize: 10.0)),
+              ),
+            ],
+          ),
+        ),
+        body: TabBarView( //(2)
+          children: pages, // 어떤 아이템을 넣어줄 지
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // for (final AnimationController controller in destinationFaders) {
+    //   controller.dispose();
+    // }
+    super.dispose();
   }
 
   _onItemTapped(int index) { // 탭을 클릭했을떄 지정한 페이지로 이동
-    setState(() {
+    /*setState(() {
       selectedIndex = index;
       //Navigator.pushNamed(context, '/list');
       switch(index) {
@@ -65,89 +135,7 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
         default :
           break;
       }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    navigatorKeys = List<GlobalKey<NavigatorState>>.generate(allDestinations.length, (int index) => GlobalKey()).toList();
-    destinationFaders = List<AnimationController>.generate(allDestinations.length, (int index) => buildFaderController()).toList();
-    destinationFaders[selectedIndex].value = 1.0;
-    destinationViews = allDestinations.map((Destination destination) {
-      return FadeTransition(
-        opacity: destinationFaders[destination.index]
-            .drive(CurveTween(curve: Curves.fastOutSlowIn)),
-        child: DestinationView(
-          destination: destination,
-          navigatorKey: navigatorKeys[destination.index],
-        ));
-    }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final NavigatorState navigator = navigatorKeys[selectedIndex].currentState!;
-        if (!navigator.canPop()) {
-          return true;
-        }
-        navigator.pop();
-        return false;
-      },
-      child: Scaffold(
-        body: SafeArea(
-          top: false,
-          child: Stack(
-            fit: StackFit.expand,
-            children: allDestinations.map((Destination destination) {
-              final int index = destination.index;
-              final Widget view = destinationViews[index];
-              if (index == selectedIndex) {
-                destinationFaders[index].forward();
-                return Offstage(offstage: false, child: view);
-              } else {
-                destinationFaders[index].reverse();
-                if (destinationFaders[index].isAnimating) {
-                  return IgnorePointer(child: view);
-                }
-                return Offstage(child: view);
-              }
-            }).toList(),
-          ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: (value) {
-            print('bottomNav click :: $value');
-            _onItemTapped(value);
-          },
-          items: const <BottomNavigationBarItem> [
-            BottomNavigationBarItem(
-              icon : Icon(Icons.pin),
-              label: '번호생성'
-            ),
-            BottomNavigationBarItem(
-              icon : Icon(Icons.addchart),
-              label: '당첨번호',
-            ),
-            BottomNavigationBarItem(
-              icon : Icon(Icons.person),
-              label: '내 정보'
-            ),
-          ]
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    for (final AnimationController controller in destinationFaders) {
-      controller.dispose();
-    }
-    super.dispose();
+    });*/
   }
 
 

@@ -8,9 +8,7 @@ import '../destination/destination.dart';
 import '../genNum/genNumber.dart';
 
 class RootPage extends StatefulWidget {
-  const RootPage({super.key, required this.destination});
-
-  final Destination destination;
+  const RootPage({super.key});
 
   @override
   State<RootPage> createState() => _RootPageState();
@@ -32,20 +30,6 @@ class _RootPageState extends State<RootPage> {
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
-
-  Widget _buildDialog(BuildContext context) {
-    return AlertDialog(
-      title: Text('${widget.destination.title} AlertDialog'),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
 
   @override
   void dispose() {
@@ -73,15 +57,14 @@ class _RootPageState extends State<RootPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home - ${widget.destination.title}'),
+        title: Text('Home'), //${widget.destination.title}
         backgroundColor: Colors.grey[800],
       ),
-      backgroundColor: widget.destination.color[50],
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -305,6 +288,7 @@ class _RootPageState extends State<RootPage> {
                 0: FixedColumnWidth(40),
                 1: FixedColumnWidth(60),
                 2: FlexColumnWidth(),
+                3: FixedColumnWidth(60),
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: <TableRow>[
@@ -327,42 +311,42 @@ class _RootPageState extends State<RootPage> {
   }
 
   listView() {
-    return Container(
-      child: Expanded(
-        child: ListView.separated(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          itemCount: numList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-                height: 50,
-                color: Colors.grey[400],
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Container(
-                      width: 30,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.yellowAccent,
-                        shape: BoxShape.circle,
-                        // borderRadius: BorderRadius.circular(30)
-                      ),
-                      child: Text(numList[index][0].toString())
-                    ),
-                    Text(numList[index][1].toString()),
-                    Text(numList[index][2].toString()),
-                    Text(numList[index][3].toString()),
-                    Text(numList[index][4].toString()),
-                    Text(numList[index][5].toString()),
-                  ],
-                )
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
-        ),
-      )
-    );
+    // return Container(
+    //   child: Expanded(
+    //     child: ListView.separated(
+    //       padding: const EdgeInsets.only(left: 20, right: 20),
+    //       itemCount: numList.length,
+    //       itemBuilder: (BuildContext context, int index) {
+    //         return Container(
+    //             height: 50,
+    //             color: Colors.grey[400],
+    //             child: Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //               children: <Widget>[
+    //                 Container(
+    //                   width: 30,
+    //                   height: 30,
+    //                   alignment: Alignment.center,
+    //                   decoration: BoxDecoration(
+    //                     color: Colors.yellowAccent,
+    //                     shape: BoxShape.circle,
+    //                     // borderRadius: BorderRadius.circular(30)
+    //                   ),
+    //                   child: Text(numList[index][0].toString())
+    //                 ),
+    //                 Text(numList[index][1].toString()),
+    //                 Text(numList[index][2].toString()),
+    //                 Text(numList[index][3].toString()),
+    //                 Text(numList[index][4].toString()),
+    //                 Text(numList[index][5].toString()),
+    //               ],
+    //             )
+    //         );
+    //       },
+    //       separatorBuilder: (BuildContext context, int index) => const Divider(),
+    //     ),
+    //   )
+    // );
   }
 
   Widget numberRow(numColor, numText) {
@@ -572,7 +556,16 @@ class _RootPageState extends State<RootPage> {
                     numberRow(numMapList[rowNo][j]['color'], numMapList[rowNo][j]['number']),
             ],
           ),
-        )
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 50,
+          color: Colors.black12,
+          child: FilledButton(
+            child: Text('저장'),
+            onPressed: () {  },
+          ),
+        ),
       ],
     );
   }
