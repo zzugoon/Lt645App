@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
+import 'package:lt645/tabItem/home/tabItemHome.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 import '../destination/destination.dart';
@@ -14,7 +15,7 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
   List<dynamic> numMapList = [];
@@ -25,11 +26,24 @@ class _RootPageState extends State<RootPage> {
     ,{'col' : 'D', 'type' : '자동'}
     ,{'col' : 'E', 'type' : '자동'}
   ];
+  static List<Widget> tabItem = <Widget>[
+    RootPage(),
+    RootPage(),
+    RootPage(),
+    RootPage(),
+  ];
 
-  dynamic rangePercent = '1';
+  var rangePercent = '1';
+  late TabController _tabController;
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
 
   @override
   void dispose() {
@@ -61,10 +75,10 @@ class _RootPageState extends State<RootPage> {
         backgroundColor: Colors.grey[800],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -142,146 +156,170 @@ class _RootPageState extends State<RootPage> {
               ],
             ),
           ),
+          TabBar(
+            controller: _tabController,
+            // indicatorColor: Colors.transparent, // indicator 없애기
+            overlayColor: MaterialStatePropertyAll(Colors.black),
+            unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
+            labelColor: Colors.black, //
+            tabs: const <Widget>[
+              Tab(
+                child: Text('범위지정',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Tab(
+                child: Text('일부선택',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Tab(
+                child: Text('emptyOption',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Tab(
+                child: Text('emptyOption',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+            ],
+          ),
           Container(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Flexible(
-                  fit: FlexFit.tight,
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(right: 10.0),
-                    height: 30,
-                    child: const Text("생성 범위",
-                      style: TextStyle(
-                        fontFamily: "on_goelip",
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal
-                      )
-                    ),
-                  )
-                ),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    height: 30,
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: TextField(
-                      readOnly: true,
-                      controller: getMinNum,
-                      // onTapOutside: (value) {
-                      //   setState(() {
-                      //     var minNum = getMinNum.text;
-                      //     var maxNum = getMaxNum.text;
-                      //     var numFormat = NumberFormat('###,###,###,###');
-                      //     GenNumber genNumber = GenNumber();
-                      //
-                      //     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
-                      //   });
-                      // },
-                      onTap: () => {
-                        numberPickerDialog(context, getMinNum.text, 'min')
-                      },
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                        labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
-                        labelText: "최소값",
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(right: 10.0),
+                      height: 30,
+                      child: const Text("생성 범위",
+                          style: TextStyle(
+                              fontFamily: "on_goelip",
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal
+                          )
                       ),
-                    ),
-                  )
+                    )
                 ),
                 Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    height: 30,
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: TextField(
-                      controller: getMaxNum,
-                      onTap: () => {
-                        numberPickerDialog(context, getMaxNum.text, 'max')
-                      },
-                      // onTapOutside: (value) {
-                      //   setState(() {
-                      //     var minNum = getMinNum.text;
-                      //     var maxNum = getMaxNum.text;
-                      //     var numFormat = NumberFormat('###,###,###,###');
-                      //     GenNumber genNumber = GenNumber();
-                      //
-                      //     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
-                      //   });
-                      // },
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                        labelStyle: const TextStyle(
-                            fontFamily: "on_goelip",
-                            fontSize: 25,
-                            fontWeight:
-                            FontWeight.normal
+                    fit: FlexFit.tight,
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: TextField(
+                        readOnly: true,
+                        controller: getMinNum,
+                        onTap: () => {
+                          numberPickerDialog(context, getMinNum.text, 'min')
+                        },
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                          labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
+                          labelText: "최소값",
+                        ),
+                      ),
+                    )
+                ),
+                Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: TextField(
+                        controller: getMaxNum,
+                        onTap: () => {
+                          numberPickerDialog(context, getMaxNum.text, 'max')
+                        },
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                          labelStyle: const TextStyle(
+                              fontFamily: "on_goelip",
+                              fontSize: 25,
+                              fontWeight:
+                              FontWeight.normal
                           ),
-                        labelText: "최대값",
+                          labelText: "최대값",
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ),
                 Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    height: 30,
-                    child: const Text("당첨 확률 : ",
-                        style: TextStyle(
-                            fontFamily: "on_goelip",
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal
-                        )
-                    ),
-                  )
+                    fit: FlexFit.tight,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      height: 30,
+                      child: const Text("당첨 확률 : ",
+                          style: TextStyle(
+                              fontFamily: "on_goelip",
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal
+                          )
+                      ),
+                    )
                 ),
                 Flexible(
-                  fit: FlexFit.tight,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: 30,
-                    child: Text('1 / $rangePercent',
-                      style: const TextStyle(
-                        fontFamily: "on_goelip",
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal
-                      )
-                    ),
-                  )
+                    fit: FlexFit.tight,
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      height: 30,
+                      child: Text('1 / $rangePercent',
+                          style: const TextStyle(
+                              fontFamily: "on_goelip",
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal
+                          )
+                      ),
+                    )
                 ),
               ],
             ),
           ),
           sizeBox(0.0, 10.0),
           Container(
-              height: 50,
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  ballNoImage(1),
-                  ballNoImage(2),
-                  ballNoImage(3),
-                  ballNoImage(4),
-                  ballNoImage(5),
-                  ballNoImage(6),
+              height: 80,
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      ballNoImage(1),
+                      ballNoImage(2),
+                      ballNoImage(3),
+                      ballNoImage(4),
+                      ballNoImage(5),
+                      sizeBox(10.0, 20.0),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      sizeBox(20.0, 10.0),
+                      ballNoImage(6),
+                      ballNoImage(7),
+                      ballNoImage(8),
+                      ballNoImage(9),
+                      ballNoImage(0),
+                    ],
+                  )
                 ],
               )
-          ), //*temp*
+          ), //*temp*, //*temp*
           sizeBox(0.0, 10.0),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Table(
               border: TableBorder.all(
-                color: Colors.black26,
+                color: Colors.black12,
                 width: 2.0,
               ),
               columnWidths: const <int, TableColumnWidth>{
@@ -559,10 +597,16 @@ class _RootPageState extends State<RootPage> {
         ),
         Container(
           alignment: Alignment.center,
-          height: 50,
-          color: Colors.black12,
-          child: FilledButton(
-            child: Text('저장'),
+          child: ElevatedButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.grey,
+              minimumSize: Size(50, 35)
+            ),
+            child: const Text('저장',
+              style: TextStyle(
+                fontSize: 12,
+              ),
+            ),
             onPressed: () {  },
           ),
         ),
