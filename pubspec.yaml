@@ -111,3 +111,9 @@ flutter:
     - family: wel_Regular
       fonts:
         - asset: assets/font/wel_Regular.ttf
+    - family: mobileBold
+      fonts:
+        - asset: assets/font/mobileBold.ttf
+    - family: mobilePOP
+      fonts:
+        - asset: assets/font/mobilePOP.ttf

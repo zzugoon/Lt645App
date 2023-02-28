@@ -16,7 +16,8 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
-  static const int _lotteryNumber = 10;
+  static const int _lotteryNumber = 45;
+  static const List<int> _lotteryNumberList = [0,10,20,30,40];
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
   List<dynamic> numMapList = [];
@@ -31,7 +32,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   var rangePercent = '1';
   late TabController _tabController;
 
-  List<bool> partialSelections = [];
+  List<List<bool>> partialSelections = [];
+  List<bool> partialSelections2 = [];
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
@@ -41,8 +43,15 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
 
-    for(var i=0; i<_lotteryNumber; i++) {
-      partialSelections.add(false);
+    // toggle bool 리스트 생성
+    for(var i=0; i<_lotteryNumberList.length; i++) {
+      List<bool> tempNumberList = [];
+      int forNum = (_lotteryNumberList[i] == 40) ? 5 : 10;
+
+      for(var j=0; j<forNum; j++) {
+        tempNumberList.add(false);
+      }
+      partialSelections.add(tempNumberList);
     }
   }
 
@@ -176,12 +185,12 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Tab(
-                  child: Text('otherOption',
+                  child: Text('Placeholder',
                   style: TextStyle(fontSize: 10.0),
                   ),
                 ),
                 Tab(
-                  child: Text('otherOption',
+                  child: Text('Placeholder',
                   style: TextStyle(fontSize: 10.0),
                   ),
                 ),
@@ -194,8 +203,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 children: [
                   tabItemRange(),
                   tabItemPartial(),
-                  emptyContainer(),
-                  emptyContainer(),
+                  Placeholder(),
+                  Placeholder(),
                 ],
               ),
             ),
@@ -508,28 +517,72 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     return Container(
       child: Column(
         children: [
-          ToggleButtons(
-            onPressed: (int index) {
-              setState(() {
-                partialSelections[index] = !partialSelections[index];
-              });
-            },
-            isSelected: partialSelections,
-            children: <Widget>[
-              for(var i=0; i<partialSelections.length; i++)
-                createPartialNumber(i)
-            ],
-            constraints: const BoxConstraints(
-              minHeight: 35.0,
-              minWidth: 35.0,
-            ),
-          ),
+          for(var i=0; i<_lotteryNumberList.length; i++)
+            createToggleButtons(_lotteryNumberList[i], i)
+          // ToggleButtons(
+          //   onPressed: (int index) {
+          //     setState(() {
+          //       partialSelections[index] = !partialSelections[index];
+          //     });
+          //   },
+          //   isSelected: partialSelections,
+          //   children: <Widget>[
+          //     for(var i=0; i<partialSelections.length; i++)
+          //       createPartialNumber(i)
+          //   ],
+          //   constraints: const BoxConstraints(
+          //     minHeight: 35.0,
+          //     minWidth: 35.0,
+          //   ),
+          // ),
+          // ToggleButtons(
+          //   onPressed: (int index) {
+          //     setState(() {
+          //       partialSelections2[index] = !partialSelections2[index];
+          //     });
+          //   },
+          //   isSelected: partialSelections2,
+          //   children: <Widget>[
+          //     for(var i=0; i<partialSelections2.length; i++)
+          //       createPartialNumber(i)
+          //   ],
+          //   constraints: const BoxConstraints(
+          //     minHeight: 35.0,
+          //     minWidth: 35.0,
+          //   ),
+          // ),
         ],
       ),
     );
   }
 
-  createPartialNumber(param) {
+  createToggleButtons(number, idx) {
+    return ToggleButtons(
+      onPressed: (int index) {
+        setState(() {
+          partialSelections[idx][index] = !partialSelections[idx][index];
+        });
+      },
+      isSelected: partialSelections[idx],
+      constraints: const BoxConstraints(
+        minHeight: 30.0,
+        minWidth: 30.0,
+      ),
+      children: <Widget>[
+        if(number == 40)...[
+          for(var i=0; i<5; i++)...[
+            createPartialNumber(i+number, idx, i)
+          ]
+        ]else...[
+          for(var i=0; i<10; i++)...[
+            createPartialNumber(i+number, idx, i)
+          ]
+        ]
+      ],
+    );
+  }
+
+  createPartialNumber(number, idx, listIndex) {
     return Container(
       width: 25,
       height: 25,
@@ -538,16 +591,16 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
         shape: BoxShape.circle,
         // You can use like this way or like the below line
         //borderRadius: new BorderRadius.circular(30.0),
-        color: partialSelections[param] ? Colors.red : Colors.grey,
+        color: partialSelections[idx][listIndex] ? Colors.red : Colors.grey,
       ),
-      child: Text((param+1).toString()),
+      child: Text((number+1).toString()),
       alignment: Alignment.center,
     );
   }
 
-  /*=================================
-    ============= method ==============
-    =================================*/
+  /*==================================
+  ============= method ===============
+  ==================================*/
 
   initData() {
     numMapList = [];
@@ -555,9 +608,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     getMaxNum.text = "45";
   }
 
-  /*=================================
-    ============= alert ==============
-    =================================*/
+  /*==================================
+  ============= alert ================
+  ==================================*/
 
   void _flutterDialog() {
     showDialog(

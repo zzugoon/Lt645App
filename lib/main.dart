@@ -8,7 +8,7 @@ import 'info/ListPage.dart';
 import 'my/TextPage.dart';
 
 void main() {
-  runApp(const MaterialApp(home: Lt645App()));
+  runApp(const Lt645App());
 }
 
 class Lt645App extends StatefulWidget {
@@ -53,6 +53,51 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   // }
 
   @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'mobilePOP'),
+      home: DefaultTabController(
+        initialIndex: 0,
+        length: 4,
+        child: Scaffold(
+          // appBar: AppBar(
+          //   title: Text('Instagram'),
+          // ),
+          bottomNavigationBar: const SizedBox(
+            height: 50,
+            child: TabBar(
+              indicatorColor: Colors.transparent, // indicator 없애기
+              unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
+              labelColor: Colors.black, //
+              tabs: <Widget>[
+                Tab(
+                  icon : Icon(Icons.pin, size: 20.0, ),
+                  child: Text('lotto', style: TextStyle(fontSize: 10.0)),
+                ),
+                Tab(
+                  icon : Icon(Icons.addchart, size: 20.0),
+                  child: Text('연금720+', style: TextStyle(fontSize: 10.0)),
+                ),
+                Tab(
+                  icon : Icon(Icons.person, size: 20.0),
+                  child: Text('당첨확인', style: TextStyle(fontSize: 10.0)),
+                ),
+                Tab(
+                  icon : Icon(Icons.person, size: 20.0),
+                  child: Text('내 정보', style: TextStyle(fontSize: 10.0)),
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView( //(2)
+            children: pages, // 어떤 아이템을 넣어줄 지
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   void initState() {
     super.initState();
     // navigatorKeys = List<GlobalKey<NavigatorState>>.generate(allDestinations.length, (int index) => GlobalKey()).toList();
@@ -67,48 +112,6 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     //       navigatorKey: navigatorKeys[destination.index],
     //     ));
     // }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 4,
-      child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Instagram'),
-        // ),
-        bottomNavigationBar: const SizedBox(
-          height: 50,
-          child: TabBar(
-            indicatorColor: Colors.transparent, // indicator 없애기
-            unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
-            labelColor: Colors.black, //
-            tabs: <Widget>[
-              Tab(
-                icon : Icon(Icons.pin, size: 20.0, ),
-                child: Text('lotto', style: TextStyle(fontSize: 10.0)),
-              ),
-              Tab(
-                icon : Icon(Icons.addchart, size: 20.0),
-                child: Text('연금720+', style: TextStyle(fontSize: 10.0)),
-              ),
-              Tab(
-                icon : Icon(Icons.person, size: 20.0),
-                child: Text('당첨확인', style: TextStyle(fontSize: 10.0)),
-              ),
-              Tab(
-                icon : Icon(Icons.person, size: 20.0),
-                child: Text('내 정보', style: TextStyle(fontSize: 10.0)),
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView( //(2)
-          children: pages, // 어떤 아이템을 넣어줄 지
-        ),
-      ),
-    );
   }
 
   @override
