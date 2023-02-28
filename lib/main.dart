@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lt645/tabItem/home/tabItemhome.dart';
-import 'genNum/genNumber.dart';
-import 'destination/destinationView.dart';
 import 'destination/destination.dart';
 import 'home/RootPage.dart';
 import 'info/ListPage.dart';

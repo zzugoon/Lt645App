@@ -80,10 +80,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Home'), //${widget.destination.title}
-          backgroundColor: Colors.grey[800],
-        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
