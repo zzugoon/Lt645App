@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import '../destination/destination.dart';
 import '../genNum/genNumber.dart';
 
 class RootPage extends StatefulWidget {
@@ -43,20 +42,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
     // toggle bool 리스트 생성
     initPartialSelections();
-  }
-
-  initPartialSelections() {
-    partialSelections = [];
-
-    for(var i=0; i<_lotteryNumberList.length; i++) {
-      List<bool> tempNumberList = [];
-      int forNum = (_lotteryNumberList[i] == 40) ? 5 : 10;
-
-      for(var j=0; j<forNum; j++) {
-        tempNumberList.add(false);
-      }
-      partialSelections.add(tempNumberList);
-    }
   }
 
   @override
@@ -102,15 +87,16 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                         minimumSize: Size(50, 40),
                       ),
                       onPressed: () {
+                        if(numMapList.length > 4) {
+                          _cupertinoDialog(context, '최대로 생성 가능한 번호는 5개 입니다.');
+                          return;
+                        }
+
                         if(_tabController.index == 0) {
                           var minNum = getMinNum.text;
                           var maxNum = getMaxNum.text;
                           var subNum = int.parse(maxNum) - int.parse(minNum);
 
-                          if(numMapList.length > 4) {
-                            _cupertinoDialog(context, '최대로 생성 가능한 번호는 5개 입니다.');
-                            return;
-                          }
                           if(subNum < 10) {
                             _cupertinoDialog(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
                             return;
@@ -122,23 +108,29 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                                 genNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
                             // ===== "번호 생성하기 end" =====
                           });
+
                         } else if(_tabController.index == 1) {
                           var tempList = partialSelections.expand((x) => x).toList();
                           var boolCountList = tempList.where((e) => e == true);
+                          var numberList = [];
+
                           if(boolCountList.length > 6) {
                             _cupertinoDialog(context, '선택한 번호가 너무 많습니다. (최대 6개)');
                             return;
                           }
+
+                          for(var i=0; i<tempList.length; i++) {
+                            if(tempList[i] == true) numberList.add(i+1);
+                          }
+
+                          setState(() {
+                            // ==== "번호 생성하기 start" ====
+                            GenNumber genNumber = GenNumber();
+                            numMapList.add(
+                                genNumber.fn_genNumTypeB(numberList));
+                            // ===== "번호 생성하기 end" =====
+                          });
                         }
-
-
-                        // setState(() {
-                        //   // ==== "번호 생성하기 start" ====
-                        //   GenNumber genNumber = GenNumber();
-                        //   numMapList.add(
-                        //       genNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
-                        //   // ===== "번호 생성하기 end" =====
-                        // });
                       },
                     ),
                   ),
@@ -160,8 +152,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                       onPressed: () {
                         setState(() {
                           if(_tabController.index == 0 ) {
-                            initData();
+                            numMapList.clear();
+                            initRangeSelections();
                           } else if(_tabController.index == 1) {
+                            numMapList.clear();
                             initPartialSelections();
                           }
                         });
@@ -610,10 +604,23 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   ============= method ===============
   ==================================*/
 
-  initData() {
-    numMapList = [];
+  initRangeSelections() {
     getMinNum.text = "1";
     getMaxNum.text = "45";
+  }
+
+  initPartialSelections() {
+    partialSelections = [];
+
+    for(var i=0; i<_lotteryNumberList.length; i++) {
+      List<bool> tempNumberList = [];
+      int forNum = (_lotteryNumberList[i] == 40) ? 5 : 10;
+
+      for(var j=0; j<forNum; j++) {
+        tempNumberList.add(false);
+      }
+      partialSelections.add(tempNumberList);
+    }
   }
 
   /*==================================

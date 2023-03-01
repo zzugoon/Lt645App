@@ -29,7 +29,7 @@ class GenNumber {
       }
     }
     ranNumList.sort();
-    print('정렬후 :: $ranNumList');
+    // print('정렬후 :: $ranNumList');
 
     for(var i in ranNumList) {
       Map map = {};
@@ -49,7 +49,51 @@ class GenNumber {
 
       resultMap.add(map);
     }
-    print(resultMap);
+    // print(resultMap);
+
+    return resultMap;
+  }
+
+  List<Map> fn_genNumTypeB(List listParam) {
+    int createNumber = 6 - listParam.length;  // 생성할 번호 갯수
+    int keyNo = 45;                // 생성할 번호 범위(max)
+
+    List<int> ranNumList = [...listParam];    // 리턴할 collection List
+    List<Map> resultMap = [];
+    int genRanNum;            // 생성된 번호 변수
+
+
+    for(var i=0; i<createNumber; i++) {
+      genRanNum = Random().nextInt(keyNo);
+      genRanNum = genRanNum + 1;
+      if(0 <= ranNumList.indexOf(genRanNum)) {
+        i=i-1;
+      }else{
+        ranNumList.add(genRanNum);
+      }
+    }
+    ranNumList.sort();
+    // print('정렬후 :: $ranNumList');
+
+    for(var i in ranNumList) {
+      Map map = {};
+      map['number'] = i.toString();
+
+      if(i < 11) {
+        map['color'] = 0xFFFFAB00;
+      }else if(10<i && i<21){
+        map['color'] = 0xFF0D47A1;
+      }else if(20<i && i<31){
+        map['color'] = 0xFFC62828;
+      }else if(30<i  && i<41){
+        map['color'] = 0xFF424242;
+      }else if(40<i  && i<=45){
+        map['color'] = 0xFF2E7D32;
+      }
+
+      resultMap.add(map);
+    }
+    // print(resultMap);
 
     return resultMap;
   }

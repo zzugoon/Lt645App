@@ -119,27 +119,6 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     super.dispose();
   }
 
-  _onItemTapped(int index) { // 탭을 클릭했을떄 지정한 페이지로 이동
-    /*setState(() {
-      selectedIndex = index;
-      //Navigator.pushNamed(context, '/list');
-      switch(index) {
-        case 0:
-          Navigator.pushNamed(context, '/');
-          break;
-        case 1:
-          Navigator.pushNamed(context, '/list');
-          break;
-        case 2:
-          Navigator.push(context, MaterialPageRoute(builder: (context) => TextPage(destination: allDestinations[index])));
-          break;
-        default :
-          break;
-      }
-    });*/
-  }
-
-
 }
 
 
