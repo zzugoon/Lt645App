@@ -425,7 +425,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 readOnly: true,
                 controller: getMinNum,
                 onTap: () => {
-                numberPickerDialog(context, getMinNum.text, 'min')
+                  numberPickerDialog(context, getMinNum.text, 'min')
                 },
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
@@ -443,6 +443,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               height: 30,
               padding: EdgeInsets.only(right: 10.0),
               child: TextField(
+                readOnly: true,
                 controller: getMaxNum,
                 onTap: () => {
                   numberPickerDialog(context, getMaxNum.text, 'max')
