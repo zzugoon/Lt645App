@@ -57,9 +57,9 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
         initialIndex: 0,
         length: 4,
         child: Scaffold(
-          // appBar: AppBar(
-          //   title: Text('Instagram'),
-          // ),
+          appBar: AppBar(
+            title: Text('6/45 Test'),
+          ),
           bottomNavigationBar: const SizedBox(
             height: 50,
             child: TabBar(

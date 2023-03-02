@@ -530,7 +530,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       child: Column(
         children: [
           for(var i=0; i<_lotteryNumberList.length; i++)...[
-            sizeBox(0, 5),
+            sizeBox(0.0, 5.0),
             createToggleButtons(_lotteryNumberList[i], i),
           ]
         ],
