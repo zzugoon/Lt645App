@@ -121,7 +121,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           var numberList = [];
 
                           if(boolCountList.length > 6) {
-                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다. (최대 6개)');
+                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다.');
                             return;
                           }
 
@@ -138,12 +138,12 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           });
 
                         } else if(_tabController.index == 2) {
-                          var tempList = partialSelections.expand((x) => x).toList();
+                          var tempList = unPartialSelections.expand((x) => x).toList();
                           var boolCountList = tempList.where((e) => e == true);
                           var numberList = [];
 
                           if(boolCountList.length > 20) {
-                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다. (최대 20개)');
+                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다.');
                             return;
                           }
 
@@ -155,7 +155,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                             // ==== "번호 생성하기 start" ====
                             GenNumber genNumber = GenNumber();
                             numMapList.add(
-                                genNumber.fn_genNumTypeB(numberList));
+                                genNumber.fn_genNumTypeC(numberList));
                             // ===== "번호 생성하기 end" =====
                           });
                         }
@@ -185,6 +185,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           } else if(_tabController.index == 1) {
                             numMapList.clear();
                             partialSelections = initPartialSelections();
+                          } else if(_tabController.index == 2) {
+                            numMapList.clear();
+                            unPartialSelections = initPartialSelections();
                           }
                         });
                       },
@@ -213,7 +216,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
             TabBar(
               controller: _tabController,
               // indicatorColor: Colors.transparent, // indicator 없애기
-              overlayColor: MaterialStatePropertyAll(Colors.black),
+              // overlayColor: MaterialStatePropertyAll(Colors.black),
               unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
               labelColor: Colors.black, //
               tabs: const <Widget>[
@@ -397,11 +400,11 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 padding: EdgeInsets.only(right: 10.0),
                 height: 30,
                 child: const Text("생성 범위",
-                  style: TextStyle(
-                    fontFamily: "on_goelip",
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal
-                  )
+                  // style: TextStyle(
+                  //   fontFamily: "on_goelip",
+                  //   fontSize: 20,
+                  //   fontWeight: FontWeight.normal
+                  // )
                 ),
               )
             ),
@@ -420,7 +423,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                  labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
+                  // labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
                   labelText: "최소값",
                   ),
                 ),
@@ -441,12 +444,12 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                labelStyle: const TextStyle(
-                  fontFamily: "on_goelip",
-                  fontSize: 25,
-                  fontWeight:
-                  FontWeight.normal
-                  ),
+                // labelStyle: const TextStyle(
+                //   fontFamily: "on_goelip",
+                //   fontSize: 25,
+                //   fontWeight:
+                //   FontWeight.normal
+                //   ),
                 labelText: "최대값",
                 ),
               ),
@@ -455,12 +458,12 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
             Flexible(
               fit: FlexFit.tight,
               child: Container(
-                alignment: Alignment.centerRight,
+                alignment: Alignment.center,
                 height: 30,
                 child: const Text("당첨 확률 : ",
                 style: TextStyle(
-                  fontFamily: "on_goelip",
-                  fontSize: 20,
+                  // fontFamily: "on_goelip",
+                  fontSize: 10,
                   fontWeight: FontWeight.normal
                   )
                 ),
@@ -473,8 +476,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               height: 30,
               child: Text('1 / $rangePercent',
                 style: const TextStyle(
-                  fontFamily: "on_goelip",
-                  fontSize: 20,
+                  // fontFamily: "on_goelip",
+                  fontSize: 10,
                   fontWeight: FontWeight.normal
                   )
                 ),
@@ -677,7 +680,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Alert'),
+        title: const Text('ALERT'),
         content: Text(msg),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(

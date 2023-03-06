@@ -9,7 +9,7 @@ class GenNumber {
   var testVarNo;
 
   List<Map> fn_genNumTypeA(int minNo, int maxNo, {keyNo1, keyNo2}) {
-    const int COUNT_NUM = 6;  // 생성할 번호 갯수
+    const int CREATE_NUMBER = 6;  // 생성할 번호 갯수
     
     List<int> ranNumList = [];    // 리턴할 collection List
     List<Map> resultMap = [];
@@ -18,7 +18,7 @@ class GenNumber {
 
     keyNo = maxNo-minNo+1;
 
-    for(var i=0; i<COUNT_NUM; i++) {
+    for(var i=0; i<CREATE_NUMBER; i++) {
       genRanNum = Random().nextInt(keyNo);
       genRanNum = genRanNum + minNo;
 
@@ -59,18 +59,20 @@ class GenNumber {
   }
 
   List<Map> fn_genNumTypeC(List listParam) {
-    int createNumber = 6 - listParam.length;  // 생성할 번호 갯수
-    int keyNo = 45;                // 생성할 번호 범위(max)
+    const int CREATE_NUMBER = 6;  // 생성할 번호 갯수
+    int keyNo = 45;               // 생성할 번호 범위(max)
+    List banList = listParam;     // 생성하지 않은 번호 리스트
 
-    List<int> ranNumList = [...listParam];    // 리턴할 collection List
+    List<int> ranNumList = [];    // collection List
     List<Map> resultMap = [];
-    int genRanNum;            // 생성된 번호 변수
+    int genRanNum;                // 생성된 번호 변수
 
 
-    for(var i=0; i<createNumber; i++) {
+    for(var i=0; i<CREATE_NUMBER; i++) {
       genRanNum = Random().nextInt(keyNo);
       genRanNum = genRanNum + 1;
-      if(0 <= ranNumList.indexOf(genRanNum)) {
+      print('genRanNum :: $genRanNum');
+      if(0 <= ranNumList.indexOf(genRanNum) || 0 <= banList.indexOf(genRanNum)) {
         i=i-1;
       }else{
         ranNumList.add(genRanNum);

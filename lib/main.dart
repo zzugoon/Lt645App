@@ -59,10 +59,15 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
         child: Scaffold(
           appBar: AppBar(
             title: Text('6/45 Test'),
+            backgroundColor: Colors.grey,
           ),
-          bottomNavigationBar: const SizedBox(
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(width: 1.0, color: Colors.black12)),
+            ),
             height: 50,
-            child: TabBar(
+            child: const TabBar(
+              // padding: EdgeInsets.only(left: 0.0, right: 0.0 ,top: 5.0, bottom: 0.0),
               indicatorColor: Colors.transparent, // indicator 없애기
               unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
               labelColor: Colors.black, //
@@ -70,18 +75,22 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
                 Tab(
                   icon : Icon(Icons.pin, size: 20.0, ),
                   child: Text('lotto', style: TextStyle(fontSize: 10.0)),
+                  iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
                 Tab(
                   icon : Icon(Icons.addchart, size: 20.0),
                   child: Text('연금720+', style: TextStyle(fontSize: 10.0)),
+                  iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
                 Tab(
-                  icon : Icon(Icons.person, size: 20.0),
+                  icon : Icon(Icons.person, size: 20.0,),
                   child: Text('당첨확인', style: TextStyle(fontSize: 10.0)),
+                  iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
                 Tab(
                   icon : Icon(Icons.person, size: 20.0),
                   child: Text('내 정보', style: TextStyle(fontSize: 10.0)),
+                  iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
               ],
             ),
@@ -117,6 +126,15 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     //   controller.dispose();
     // }
     super.dispose();
+  }
+
+  // 왜 안되지??
+  Tab createTab(text) {
+    return Tab(
+      icon : const Icon(Icons.person, size: 20.0),
+      iconMargin: const EdgeInsets.only(bottom: 5.0),
+      child: Text(text, style: const TextStyle(fontSize: 10.0)),
+    );
   }
 
 }
