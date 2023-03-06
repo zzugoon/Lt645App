@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../home/RootPage.dart';
 import '../info/ListPage.dart';
-import '../my/TextPage.dart';
+import '../my/MyInfoPage.dart';
 import 'destination.dart';
 
 class DestinationView extends StatefulWidget {
@@ -33,7 +33,7 @@ class _DestinationViewState extends State<DestinationView> {
               case '/list':
                 return ListPage(destination: widget.destination);
               case '/text':
-                return TextPage(destination: widget.destination);
+                return MyInfoPage(destination: widget.destination);
             }
             assert(false);
             return const SizedBox();

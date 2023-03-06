@@ -216,5 +216,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      sha256: "8efed4e19e345cbd29998b4fbba409e20d0e02e90386c84c5e19a0a8f97cbd0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.24"
 sdks:
   dart: ">=2.19.0 <3.0.0"
+  flutter: ">=1.12.13+hotfix.5"

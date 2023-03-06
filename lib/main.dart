@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lt645/result/ResultPage.dart';
 import 'destination/destination.dart';
 import 'home/RootPage.dart';
 import 'info/ListPage.dart';
-import 'my/TextPage.dart';
+import 'my/MyInfoPage.dart';
 
 void main() {
   runApp(const Lt645App());
@@ -27,8 +28,8 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   static List<Widget> pages = <Widget>[
     RootPage(),
     ListPage(destination: allDestinations[1]),
-    TextPage(destination: allDestinations[2]),
-    TextPage(destination: allDestinations[2]),
+    ResultPage(),
+    MyInfoPage(destination: allDestinations[3]),
   ];
 
   late final List<GlobalKey<NavigatorState>> navigatorKeys;

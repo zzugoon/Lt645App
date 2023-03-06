@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 import '../destination/destination.dart';
 
-class TextPage extends StatefulWidget {
-  const TextPage({super.key, required this.destination});
+class MyInfoPage extends StatefulWidget {
+  const MyInfoPage({super.key, required this.destination});
 
   final Destination destination;
 
   @override
-  State<TextPage> createState() => _TextPageState();
+  State<MyInfoPage> createState() => _MyInfoPageState();
 }
 
-class _TextPageState extends State<TextPage> {
+class _MyInfoPageState extends State<MyInfoPage> {
   late final TextEditingController textController;
 
   @override
@@ -32,7 +32,7 @@ class _TextPageState extends State<TextPage> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.destination.title} TextPage - /list/text'),
+        title: Text('${widget.destination.title} MyInfoPage - /list/text'),
         backgroundColor: widget.destination.color,
       ),
       backgroundColor: widget.destination.color[50],
