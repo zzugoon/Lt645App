@@ -18,6 +18,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   static const List<int> _lotteryNumberList = [0,10,20,30,40];
 
   late List<List<bool>> partialSelections;
+  late List<List<bool>> unPartialSelections;
 
   List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
   List<dynamic> numMapList = [];
@@ -41,7 +42,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     _tabController = TabController(length: 4, vsync: this);
 
     // toggle bool 리스트 생성
-    initPartialSelections();
+    partialSelections = initPartialSelections();
+    unPartialSelections = initPartialSelections();
   }
 
   @override
@@ -87,11 +89,15 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                         minimumSize: Size(50, 40),
                       ),
                       onPressed: () {
+                        //create Number
+
+                        //-validation
                         if(numMapList.length > 4) {
                           _cupertinoDialog(context, '최대로 생성 가능한 번호는 5개 입니다.');
                           return;
                         }
 
+                        //-tab index 별 생성 로직
                         if(_tabController.index == 0) {
                           var minNum = getMinNum.text;
                           var maxNum = getMaxNum.text;
@@ -116,6 +122,28 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
                           if(boolCountList.length > 6) {
                             _cupertinoDialog(context, '선택한 번호가 너무 많습니다. (최대 6개)');
+                            return;
+                          }
+
+                          for(var i=0; i<tempList.length; i++) {
+                            if(tempList[i] == true) numberList.add(i+1);
+                          }
+
+                          setState(() {
+                            // ==== "번호 생성하기 start" ====
+                            GenNumber genNumber = GenNumber();
+                            numMapList.add(
+                                genNumber.fn_genNumTypeB(numberList));
+                            // ===== "번호 생성하기 end" =====
+                          });
+
+                        } else if(_tabController.index == 2) {
+                          var tempList = partialSelections.expand((x) => x).toList();
+                          var boolCountList = tempList.where((e) => e == true);
+                          var numberList = [];
+
+                          if(boolCountList.length > 20) {
+                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다. (최대 20개)');
                             return;
                           }
 
@@ -156,7 +184,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                             initRangeSelections();
                           } else if(_tabController.index == 1) {
                             numMapList.clear();
-                            initPartialSelections();
+                            partialSelections = initPartialSelections();
                           }
                         });
                       },
@@ -195,12 +223,12 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Tab(
-                  child: Text('부분선택',
+                  child: Text('선택포함',
                   style: TextStyle(fontSize: 10.0),
                   ),
                 ),
                 Tab(
-                  child: Text('Placeholder',
+                  child: Text('선택제외',
                   style: TextStyle(fontSize: 10.0),
                   ),
                 ),
@@ -218,7 +246,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 children: [
                   tabItemRange(),
                   tabItemPartial(),
-                  Placeholder(),
+                  tabItemUnPartial(),
                   Placeholder(),
                 ],
               ),
@@ -255,49 +283,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   }
 
   /*=================================
-    ============ widget ===============
-    =================================*/
+  ============ widget ===============
+  =================================*/
   sizeBox(width, heights) {
     return SizedBox(width: width ,height: heights);
-  }
-
-  listView() {
-    // return Container(
-    //   child: Expanded(
-    //     child: ListView.separated(
-    //       padding: const EdgeInsets.only(left: 20, right: 20),
-    //       itemCount: numList.length,
-    //       itemBuilder: (BuildContext context, int index) {
-    //         return Container(
-    //             height: 50,
-    //             color: Colors.grey[400],
-    //             child: Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //               children: <Widget>[
-    //                 Container(
-    //                   width: 30,
-    //                   height: 30,
-    //                   alignment: Alignment.center,
-    //                   decoration: BoxDecoration(
-    //                     color: Colors.yellowAccent,
-    //                     shape: BoxShape.circle,
-    //                     // borderRadius: BorderRadius.circular(30)
-    //                   ),
-    //                   child: Text(numList[index][0].toString())
-    //                 ),
-    //                 Text(numList[index][1].toString()),
-    //                 Text(numList[index][2].toString()),
-    //                 Text(numList[index][3].toString()),
-    //                 Text(numList[index][4].toString()),
-    //                 Text(numList[index][5].toString()),
-    //               ],
-    //             )
-    //         );
-    //       },
-    //       separatorBuilder: (BuildContext context, int index) => const Divider(),
-    //     ),
-    //   )
-    // );
   }
 
   Widget numberRow(numColor, numText) {
@@ -337,7 +326,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
           height: 50,
           color: Colors.black12,
           child: Text(fr,
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: "on_goelip",
                 fontSize: 30,
                 fontWeight: FontWeight.normal
@@ -351,7 +340,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
             width: null,
             color: Colors.white,
             child: Text(se,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: "on_goelip",
                   fontSize: 25,
                   fontWeight: FontWeight.normal
@@ -530,24 +519,41 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     return Container(
       child: Column(
         children: [
+          sizeBox(0.0, 10.0),
+          const Text('* 선택한 숫자를 포함하여 추첨번호를 생성합니다(최대 6개 선택 가능)'),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
             sizeBox(0.0, 5.0),
-            createToggleButtons(_lotteryNumberList[i], i),
+            createToggleButtons(_lotteryNumberList[i], i, partialSelections),
           ]
         ],
       ),
     );
   }
 
-  createToggleButtons(number, idx) {
+  tabItemUnPartial() {
+    return Container(
+      child: Column(
+        children: [
+          sizeBox(0.0, 10.0),
+          const Text('* 선택한 숫자를 제외하여 추첨번호를 생성합니다(최대 20개 선택 가능)'),
+          for(var i=0; i<_lotteryNumberList.length; i++)...[
+            sizeBox(0.0, 5.0),
+            createToggleButtons(_lotteryNumberList[i], i, unPartialSelections),
+          ]
+        ],
+      ),
+    );
+  }
+
+  createToggleButtons(number, idx, selections) {
     return ToggleButtons(
       onPressed: (int index) {
         setState(() {
-          partialSelections[idx][index] = !partialSelections[idx][index];
+          selections[idx][index] = !selections[idx][index];
         });
       },
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      isSelected: partialSelections[idx],
+      isSelected: selections[idx],
       constraints: const BoxConstraints(
         minHeight: 33.0,
         minWidth: 33.0,
@@ -555,18 +561,18 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       children: <Widget>[
         if(number == 40)...[
           for(var i=0; i<5; i++)...[
-            createPartialNumber(i+number, idx, i)
+            createPartialNumber(i+number, idx, i, selections)
           ]
         ]else...[
           for(var i=0; i<10; i++)...[
-            createPartialNumber(i+number, idx, i)
+            createPartialNumber(i+number, idx, i, selections)
           ]
         ]
       ],
     );
   }
 
-  createPartialNumber(number, idx, listIndex) {
+  createPartialNumber(number, idx, listIndex, selections) {
     return Container(
       width: 25,
       height: 25,
@@ -575,29 +581,29 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
         shape: BoxShape.circle,
         // You can use like this way or like the below line
         //borderRadius: new BorderRadius.circular(30.0),
-        color: changePartialColor(idx, listIndex)
+        color: changePartialColor(idx, listIndex, selections)
       ),
       alignment: Alignment.center,
       child: Text((number+1).toString(),
         style: TextStyle(
-          color: partialSelections[idx][listIndex] ? Colors.white : Colors.black38,
+          color: selections[idx][listIndex] ? Colors.white : Colors.black38,
         ),
       ),
     );
   }
 
-  changePartialColor (idx, listIndex) {
+  changePartialColor (idx, listIndex, selections) {
     // partialSelections[idx][listIndex] ? Colors.red : Colors.grey,
     if(idx == 0) {
-      return partialSelections[idx][listIndex] ? Color(0xFFFFAB00) : Colors.grey;
+      return selections[idx][listIndex] ? Color(0xFFFFAB00) : Colors.grey;
     } else if(idx == 1) {
-      return partialSelections[idx][listIndex] ? Color(0xFF0D47A1) : Colors.grey;
+      return selections[idx][listIndex] ? Color(0xFF0D47A1) : Colors.grey;
     } else if(idx == 2) {
-      return partialSelections[idx][listIndex] ? Color(0xFFC62828) : Colors.grey;
+      return selections[idx][listIndex] ? Color(0xFFC62828) : Colors.grey;
     } else if(idx == 3) {
-      return partialSelections[idx][listIndex] ? Color(0xFF424242) : Colors.grey;
+      return selections[idx][listIndex] ? Color(0xFF424242) : Colors.grey;
     } else if(idx == 4) {
-      return partialSelections[idx][listIndex] ? Color(0xFF2E7D32) : Colors.grey;
+      return selections[idx][listIndex] ? Color(0xFF2E7D32) : Colors.grey;
     }
   }
 
@@ -610,8 +616,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     getMaxNum.text = "45";
   }
 
-  initPartialSelections() {
-    partialSelections = [];
+  List<List<bool>> initPartialSelections() {
+    List<List<bool>> tempList = [];
 
     for(var i=0; i<_lotteryNumberList.length; i++) {
       List<bool> tempNumberList = [];
@@ -620,8 +626,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       for(var j=0; j<forNum; j++) {
         tempNumberList.add(false);
       }
-      partialSelections.add(tempNumberList);
+      tempList.add(tempNumberList);
     }
+    return tempList;
   }
 
   /*==================================
