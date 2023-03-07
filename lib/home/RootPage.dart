@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -204,7 +208,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                       ),
                       child: const Text('저장'),
                       onPressed: () {
+
                         setState(() {
+
                         });
                       },
                     ),
@@ -634,6 +640,73 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     return tempList;
   }
 
+  // saveData() async {
+  //   // 데이터 저장하기
+  //   Map<String, dynamic> data = {
+  //     'name': 'flutteruser',
+  //     'age': 25,
+  //     'email': 'flutteruser@example.com',
+  //   };
+  //   final file = File('data.json');
+  //   await file.writeAsString(jsonEncode(data));
+  // }
+  //
+  // loadData() async {
+  //   // 데이터 불러오기
+  //   final file = File('data.json');
+  //   if (await file.exists()) {
+  //     final jsonString = await file.readAsString();
+  //     Map<String, dynamic> data = jsonDecode(jsonString);
+  //     print(data['name']); // flutteruser
+  //     print(data['age']); // 25
+  //     print(data['email']); // flutteruser@example.com
+  //   }
+  // }
+  //
+  // tempLoadSave() async {
+  //   // 파일 저장하기
+  //   File file = File('my_file.txt');
+  //   file.writeAsStringSync(json.encode({'username': 'flutteruser'}));
+  //
+  //   // 파일 불러오기
+  //   String jsonString = await file.readAsString();
+  //   Map<String, dynamic> data = json.decode(jsonString);
+  //
+  //   //==============================================
+  //
+  //   // 데이터 저장하기
+  //   Future<void> saveData(String data) async {
+  //     final directory = await getApplicationDocumentsDirectory();
+  //     final file = File('${directory.path}/data.txt');
+  //     await file.writeAsString(data);
+  //   }
+  //
+  //   // 데이터 불러오기
+  //   Future<String> loadData() async {
+  //     final directory = await getApplicationDocumentsDirectory();
+  //     final file = File('${directory.path}/data.txt');
+  //     if (await file.exists()) {
+  //       final data = await file.readAsString();
+  //       return data;
+  //     } else {
+  //       return '';
+  //     }
+  //   }
+  //
+  //
+  //   // 데이터 저장하기
+  //   await saveData(json.encode({'name': 'flutteruser', 'age': 25}));
+  //
+  //   // 데이터 불러오기
+  //   String datas = await loadData();
+  //   if (data.isNotEmpty) {
+  //   Map<String, dynamic> userData = json.decode(datas);
+  //   print(userData['name']); // flutteruser
+  //   print(userData['age']); // 25
+  //   }
+  //
+  // }
+
   /*==================================
   ============= alert ================
   ==================================*/
@@ -767,7 +840,4 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     );
   }
 
-/*================================
-=========== method End ===========
-=================================*/
 }
