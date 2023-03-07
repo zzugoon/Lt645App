@@ -28,7 +28,7 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   static List<Widget> pages = <Widget>[
     RootPage(),
     ListPage(destination: allDestinations[1]),
-    ResultPage(),
+    ResultPage(url:'https://dhlottery.co.kr/common.do?method=main'),
     MyInfoPage(destination: allDestinations[3]),
   ];
 

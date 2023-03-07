@@ -10,7 +10,7 @@ class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int itemCount = 50;
+    const int itemCount = 20;
     final ButtonStyle buttonStyle = OutlinedButton.styleFrom(
       foregroundColor: destination.color,
       fixedSize: const Size.fromHeight(128),
