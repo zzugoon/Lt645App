@@ -4,9 +4,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:saf/saf.dart';
+import 'package:shared_storage/shared_storage.dart';
 
 import '../genNum/genNumber.dart';
 
@@ -94,6 +98,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                       ),
                       onPressed: () {
                         //create Number
+                        print('createNumber');
 
                         //-validation
                         if(numMapList.length > 4) {
@@ -206,11 +211,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           backgroundColor: Colors.grey[600],
                           minimumSize: Size(50, 40)
                       ),
-                      child: const Text('저장'),
+                      child: const Text('불러오기'),
                       onPressed: () {
-
+                        loadData();
                         setState(() {
-
                         });
                       },
                     ),
@@ -383,7 +387,11 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 fontSize: 12,
               ),
             ),
-            onPressed: () {  },
+            onPressed: () {
+              print(numMapList[rowNo]);
+
+              saveData(numMapList[rowNo]);
+            },
           ),
         ),
       ],
@@ -639,73 +647,130 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     }
     return tempList;
   }
+  
+  //=== 파일 저장 ===
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
 
-  // saveData() async {
-  //   // 데이터 저장하기
-  //   Map<String, dynamic> data = {
-  //     'name': 'flutteruser',
-  //     'age': 25,
-  //     'email': 'flutteruser@example.com',
-  //   };
-  //   final file = File('data.json');
-  //   await file.writeAsString(jsonEncode(data));
-  // }
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/data.json');
+  }
+
+  Future<File> saveData(List dataList) async {
+    print("saveData");
+
+    // 데이터 저장하기
+    Map<String, dynamic> data = {
+      'date' : DateTime.now().toString(),
+      'idx1' : dataList[0],
+      'idx2' : dataList[1],
+      'idx3' : dataList[2],
+      'idx4' : dataList[3],
+      'idx5' : dataList[4],
+      'idx6' : dataList[5],
+    };
+
+    // final file = File('data.json');
+    final file = await _localFile;
+
+    // return await file.writeAsString(jsonEncode(data));
+    return await file.writeAsString(jsonEncode(data));
+  }
+
+  Future<Map?> loadData() async {
+    try {
+      // 파일 읽기.
+      final file = await _localFile;
+
+      if (await file.exists()) {
+        final jsonString = await file.readAsString();
+        Map<String, dynamic> data = jsonDecode(jsonString);
+        print(data); // data
+
+        return data;
+      }
+    } catch (e) {
+      // 에러가 발생할 경우 0을 반환.
+      return {'error' : e};
+    }
+    return null;
+  }
+
+  // Future<void> exportFile({
+  //   required String csvData,
+  //   required String fileName,
+  // }) async {
+  //   Uri? selectedUriDir;
+  //   final pref = await SharedPreferences.getInstance();
+  //   final scopeStoragePersistUrl = pref.getString('scopeStoragePersistUrl');
   //
-  // loadData() async {
-  //   // 데이터 불러오기
-  //   final file = File('data.json');
-  //   if (await file.exists()) {
-  //     final jsonString = await file.readAsString();
-  //     Map<String, dynamic> data = jsonDecode(jsonString);
-  //     print(data['name']); // flutteruser
-  //     print(data['age']); // 25
-  //     print(data['email']); // flutteruser@example.com
+  //   // Check User has already grant permission to any directory or not
+  //   if (scopeStoragePersistUrl != null &&
+  //       await isPersistedUri(Uri.parse(scopeStoragePersistUrl)) &&
+  //       (await exists(Uri.parse(scopeStoragePersistUrl)) ?? false)) {
+  //     selectedUriDir = Uri.parse(scopeStoragePersistUrl);
+  //   } else {
+  //     selectedUriDir = await openDocumentTree();
+  //     await pref.setString('scopeStoragePersistUrl', selectedUriDir.toString());
   //   }
-  // }
-  //
-  // tempLoadSave() async {
-  //   // 파일 저장하기
-  //   File file = File('my_file.txt');
-  //   file.writeAsStringSync(json.encode({'username': 'flutteruser'}));
-  //
-  //   // 파일 불러오기
-  //   String jsonString = await file.readAsString();
-  //   Map<String, dynamic> data = json.decode(jsonString);
-  //
-  //   //==============================================
-  //
-  //   // 데이터 저장하기
-  //   Future<void> saveData(String data) async {
-  //     final directory = await getApplicationDocumentsDirectory();
-  //     final file = File('${directory.path}/data.txt');
-  //     await file.writeAsString(data);
+  //   if (selectedUriDir == null) {
+  //     return false;
   //   }
-  //
-  //   // 데이터 불러오기
-  //   Future<String> loadData() async {
-  //     final directory = await getApplicationDocumentsDirectory();
-  //     final file = File('${directory.path}/data.txt');
-  //     if (await file.exists()) {
-  //       final data = await file.readAsString();
-  //       return data;
-  //     } else {
-  //       return '';
+  //   try {
+  //     final existingFile = await findFile(selectedUriDir, fileName);
+  //     if (existingFile != null && existingFile.isFile) {
+  //       debugPrint("Found existing file ${existingFile.uri}");
+  //       await delete(existingFile.uri);
   //     }
+  //     final newDocumentFile = await createFileAsString(
+  //       selectedUriDir,
+  //       mimeType: AppConstants.csvMimeTypeWhileExport,
+  //       content: csvData,
+  //       displayName: fileName,
+  //     );
+  //     return newDocumentFile != null;
+  //   } catch (e) {
+  //     debugPrint("Exception while create new file: ${e.toString()}");
+  //     return false;
   //   }
-  //
-  //
-  //   // 데이터 저장하기
-  //   await saveData(json.encode({'name': 'flutteruser', 'age': 25}));
-  //
-  //   // 데이터 불러오기
-  //   String datas = await loadData();
-  //   if (data.isNotEmpty) {
-  //   Map<String, dynamic> userData = json.decode(datas);
-  //   print(userData['name']); // flutteruser
-  //   print(userData['age']); // 25
-  //   }
-  //
   // }
+
+  tempWrite() async {
+    var tempSaf = await Saf.getDynamicDirectoryPermission();
+
+    var myFile = File('file.txt');
+
+    final filename = 'file.txt';
+    var file = await File(filename).writeAsString('some content');
+
+    print(file);
+
+  }
+
+  tempRead() {
+    File('file.txt').readAsString().then((String contents) {
+      print(contents);
+    });
+  }
+
+  Future<void> createFileBySAF(String fileName, Uint8List uint8list) async {
+
+    /*From: shared_storage: ^0.2.0*/
+    Uri? uri = await openDocumentTree();
+
+    /*From: saf: ^1.0.3+3*/
+    Map<String, dynamic>? result = await MethodChannel('com.ivehement.plugins/saf/documentfile')
+                                          .invokeMapMethod<String, dynamic>('createFile', <String, dynamic>{
+      'mimeType': 'any',
+      'content': uint8list,
+      'displayName': fileName,
+      'directoryUri': '$uri',
+    });
+    print(result);
+  }
 
   /*==================================
   ============= alert ================

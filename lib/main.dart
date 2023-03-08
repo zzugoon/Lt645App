@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lt645/result/ResultPage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'destination/destination.dart';
 import 'home/RootPage.dart';
 import 'info/ListPage.dart';
 import 'my/MyInfoPage.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const Lt645App());
 }
 
@@ -107,6 +108,13 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
   @override
   void initState() {
     super.initState();
+
+    permission();
+
+    // if (await Permission.location.isGranted) {
+    //   // 권한이 부여되었습니다.
+    // }
+
     // navigatorKeys = List<GlobalKey<NavigatorState>>.generate(allDestinations.length, (int index) => GlobalKey()).toList();
     // destinationFaders = List<AnimationController>.generate(allDestinations.length, (int index) => buildFaderController()).toList();
     // destinationFaders[selectedIndex].value = 1.0;
@@ -127,6 +135,16 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
     //   controller.dispose();
     // }
     super.dispose();
+  }
+
+  Future<bool> permission() async {
+    Map<Permission, PermissionStatus> status = await [Permission.storage].request(); // [] 권한배열에 권한을 작성
+
+    if (await Permission.storage.isGranted) {
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
   }
 
   // 왜 안되지??
