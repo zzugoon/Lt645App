@@ -658,10 +658,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   Future<File> saveData(List dataList) async {
     print("saveData");
-    List<Map>? saveData = [];
+    List<dynamic>? saveData;
 
     // 기존 파일 불러오기
-    // saveData = await loadData();
+    saveData = await loadData();
 
     // 데이터 저장하기
     Map<String, dynamic> data = {
