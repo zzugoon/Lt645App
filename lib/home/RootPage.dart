@@ -539,7 +539,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
           sizeBox(0.0, 10.0),
           const Text('* 선택한 숫자를 포함하여 추첨번호를 생성합니다(최대 6개 선택 가능)'),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
-            sizeBox(0.0, 5.0),
+            sizeBox(0.0, 1.0),
             createToggleButtons(_lotteryNumberList[i], i, partialSelections),
           ]
         ],
@@ -554,7 +554,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
           sizeBox(0.0, 10.0),
           const Text('* 선택한 숫자를 제외하여 추첨번호를 생성합니다(최대 20개 선택 가능)'),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
-            sizeBox(0.0, 5.0),
+            sizeBox(0.0, 1.0),
             createToggleButtons(_lotteryNumberList[i], i, unPartialSelections),
           ]
         ],
@@ -649,52 +649,58 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   }
   
   //=== 파일 저장 ===
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
   Future<File> get _localFile async {
-    final path = await _localPath;
+    final directory = await getApplicationDocumentsDirectory();
+
+    final path = directory.path;
     return File('$path/data.json');
   }
 
   Future<File> saveData(List dataList) async {
     print("saveData");
+    List<Map>? saveData = [];
+
+    // 기존 파일 불러오기
+    // saveData = await loadData();
 
     // 데이터 저장하기
     Map<String, dynamic> data = {
-      'date' : DateTime.now().toString(),
-      'idx1' : dataList[0],
-      'idx2' : dataList[1],
-      'idx3' : dataList[2],
-      'idx4' : dataList[3],
-      'idx5' : dataList[4],
-      'idx6' : dataList[5],
+      'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'idx1' : dataList[0]['number'],
+      'idx2' : dataList[1]['number'],
+      'idx3' : dataList[2]['number'],
+      'idx4' : dataList[3]['number'],
+      'idx5' : dataList[4]['number'],
+      'idx6' : dataList[5]['number'],
     };
+
+    saveData?.add(data);
 
     // final file = File('data.json');
     final file = await _localFile;
 
     // return await file.writeAsString(jsonEncode(data));
-    return await file.writeAsString(jsonEncode(data));
+    return await file.writeAsString(jsonEncode(saveData));
   }
 
-  Future<Map?> loadData() async {
+  Future<List?> loadData() async {
     try {
       // 파일 읽기.
       final file = await _localFile;
 
       if (await file.exists()) {
         final jsonString = await file.readAsString();
-        Map<String, dynamic> data = jsonDecode(jsonString);
-        print(data); // data
 
-        return data;
+        if(jsonString != null || jsonString != 'null') {
+          List<dynamic> data = jsonDecode(jsonString);
+          print(data); // data
+
+          return data;
+        }
       }
     } catch (e) {
       // 에러가 발생할 경우 0을 반환.
-      return {'error' : e};
+      return null;
     }
     return null;
   }
