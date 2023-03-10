@@ -31,7 +31,7 @@ class _DestinationViewState extends State<DestinationView> {
               case '/':
                 return RootPage();
               case '/list':
-                return ListPage(destination: widget.destination);
+                return ListPage();
               case '/text':
                 return MyInfoPage(destination: widget.destination);
             }

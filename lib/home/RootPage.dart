@@ -223,34 +223,40 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               ),
             ),
             sizeBox(0.0, 10.0),
-            TabBar(
-              controller: _tabController,
-              // indicatorColor: Colors.transparent, // indicator 없애기
-              // overlayColor: MaterialStatePropertyAll(Colors.black),
-              unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색
-              labelColor: Colors.black, //
-              tabs: const <Widget>[
-                Tab(
-                  child: Text('범위지정',
-                  style: TextStyle(fontSize: 10.0),
-                  ),
+            Container(
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  color: Colors.black12
                 ),
-                Tab(
-                  child: Text('선택포함',
-                  style: TextStyle(fontSize: 10.0),
+                // indicatorColor: Colors.transparent, // indicator 없애기
+                // overlayColor: MaterialStatePropertyAll(Colors.black),
+                unselectedLabelColor: Colors.grey, // 선택되지 않은 tab 색,
+                labelColor: Colors.black, //
+                tabs: const <Widget>[
+                  Tab(
+                    child: Text('범위지정',
+                    style: TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Text('선택제외',
-                  style: TextStyle(fontSize: 10.0),
+                  Tab(
+                    child: Text('선택포함',
+                    style: TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Text('Placeholder',
-                  style: TextStyle(fontSize: 10.0),
+                  Tab(
+                    child: Text('선택제외',
+                    style: TextStyle(fontSize: 14.0),
+                    ),
                   ),
-                ),
-              ],
+                  Tab(
+                    child: Text('Placeholder',
+                    style: TextStyle(fontSize: 10.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Flexible(
               fit: FlexFit.tight,
@@ -400,7 +406,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   tabItemRange () {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [Container( ////////////////// selectRange //////////////////
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Row(
@@ -535,11 +541,16 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   tabItemPartial() {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        // mainAxisSize: MainAxisSize.max,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          sizeBox(0.0, 10.0),
-          const Text('* 선택한 숫자를 포함하여 추첨번호를 생성합니다(최대 6개 선택 가능)'),
+          // sizeBox(0.0, 10.0),
+          const Text('선택한 숫자를 포함하여 추첨번호를 생성합니다',
+          style: TextStyle(fontSize: 12)),
+          const Text('(최대 6개 선택 가능)',
+              style: TextStyle(fontSize: 10)),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
-            sizeBox(0.0, 1.0),
             createToggleButtons(_lotteryNumberList[i], i, partialSelections),
           ]
         ],
@@ -550,9 +561,13 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   tabItemUnPartial() {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          sizeBox(0.0, 10.0),
-          const Text('* 선택한 숫자를 제외하여 추첨번호를 생성합니다(최대 20개 선택 가능)'),
+          // sizeBox(0.0, 10.0),
+          const Text('선택한 숫자를 제외하여 추첨번호를 생성합니다',
+            style: TextStyle(fontSize: 12)),
+          const Text('(최대 20개 선택 가능)',
+              style: TextStyle(fontSize: 10)),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
             sizeBox(0.0, 1.0),
             createToggleButtons(_lotteryNumberList[i], i, unPartialSelections),
@@ -575,6 +590,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
         minHeight: 33.0,
         minWidth: 33.0,
       ),
+      renderBorder: false,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       children: <Widget>[
         if(number == 40)...[
           for(var i=0; i<5; i++)...[
@@ -591,8 +608,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   createPartialNumber(number, idx, listIndex, selections) {
     return Container(
-      width: 25,
-      height: 25,
+      width: 28,
+      height: 28,
       decoration: BoxDecoration(
         border: Border.all(width: 1),
         shape: BoxShape.circle,
@@ -658,7 +675,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   Future<File> saveData(List dataList) async {
     print("saveData");
-    List<dynamic>? saveData;
+    List<dynamic>? saveData = [];
 
     // 기존 파일 불러오기
     saveData = await loadData();
@@ -680,7 +697,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     final file = await _localFile;
 
     // return await file.writeAsString(jsonEncode(data));
-    return await file.writeAsString(jsonEncode(saveData));
+    return file.writeAsString(jsonEncode(saveData));
   }
 
   Future<List?> loadData() async {
