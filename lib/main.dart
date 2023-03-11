@@ -81,12 +81,13 @@ class _Lt645App extends State<Lt645App> with TickerProviderStateMixin<Lt645App> 
                 ),
                 Tab(
                   icon : Icon(Icons.addchart, size: 20.0),
-                  child: Text('연금720+', style: TextStyle(fontSize: 10.0)),
+                  // child: Text('연금720+', style: TextStyle(fontSize: 10.0)),
+                  child: Text('저장목록', style: TextStyle(fontSize: 10.0)),
                   iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
                 Tab(
                   icon : Icon(Icons.person, size: 20.0,),
-                  child: Text('당첨확인', style: TextStyle(fontSize: 10.0)),
+                  child: Text('홈페이지', style: TextStyle(fontSize: 10.0)),
                   iconMargin: EdgeInsets.only(bottom: 5.0),
                 ),
                 Tab(

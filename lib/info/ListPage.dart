@@ -81,49 +81,96 @@ class _ListPageState extends State<ListPage> {
           padding: EdgeInsets.only(left: 20.0, right: 20.0),
           children: [
             for(var i=0; i < numberList.length; i++)...[
-              if(i==0 || numberList[i]['date'] != numberList[i-1]['date'])...[
-                ListTile(
-                  title: Text(numberList[i]['date']),
-                  // subtitle: const Text('Tap here for Hero transition'),
-                ),
-              ],
-              Container(
-                margin: const EdgeInsets.all(5.0),
-                // decoration: BoxDecoration(
-                //   border: Border.all(color: Colors.black, width: 1),
-                // ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx1'],),
-                    ),
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx2'],),
-                    ),
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx3'],),
-                    ),
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx4'],),
-                    ),
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx5'],),
-                    ),
-                    Container(width: 30,
-                      alignment: Alignment.center,
-                      child: Text(numberList[i]['idx6'],),
-                    ),
-                  ],
-                ),
+              Card(
+                margin: EdgeInsets.all(5),
+                shadowColor: Colors.grey,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(numberList[i]['date']),
+                      Padding(
+                        padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            numberRow(numberList[i]['idx1']),
+                            numberRow(numberList[i]['idx2']),
+                            numberRow(numberList[i]['idx3']),
+                            numberRow(numberList[i]['idx4']),
+                            numberRow(numberList[i]['idx5']),
+                            numberRow(numberList[i]['idx6']),
+                          ],
+                        ),
+                      ),                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+
+                              },
+                              child: Text('보기')
+                          ),
+                          TextButton(
+                              onPressed: () {
+
+                              },
+                              child: Text('삭제')
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
               ),
-              Divider(color: Colors.black, height: 2,),
             ]
+            // for(var i=0; i < numberList.length; i++)...[
+            //   if(i==0 || numberList[i]['date'] != numberList[i-1]['date'])...[
+            //     ListTile(
+            //       title: Text(numberList[i]['date']),
+            //       // subtitle: const Text('Tap here for Hero transition'),
+            //     ),
+            //   ],
+            //   Container(
+            //     margin: const EdgeInsets.all(5.0),
+            //     // decoration: BoxDecoration(
+            //     //   border: Border.all(color: Colors.black, width: 1),
+            //     // ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //       children: [
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx1'],),
+            //         ),
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx2'],),
+            //         ),
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx3'],),
+            //         ),
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx4'],),
+            //         ),
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx5'],),
+            //         ),
+            //         Container(width: 30,
+            //           alignment: Alignment.center,
+            //           child: Text(numberList[i]['idx6'],),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            //   Divider(color: Colors.black, height: 2,),
+            // ]
           ],
         ),
 
@@ -147,6 +194,35 @@ class _ListPageState extends State<ListPage> {
         //     );
         //   },
         // ),
+      ),
+    );
+  }
+
+  Widget numberRow(numText) {
+    return Container(
+      height: 30,
+      width: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          // color: Color(numColor),
+          shape: BoxShape.circle,
+          // gradient: LinearGradient(
+          //     colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
+          //     stops: [0.1, 0.6],
+          //     begin: Alignment.topRight,
+          //     end: Alignment.bottomLeft
+          //
+          // )
+        // borderRadius: BorderRadius.circular(30)
+      ),
+      child: Text(numText,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            color: Colors.black,
+            fontFamily: "wel_Regular",
+            fontSize: 13,
+            fontWeight: FontWeight.normal
+        ),
       ),
     );
   }

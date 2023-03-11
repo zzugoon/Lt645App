@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -397,6 +398,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               print(numMapList[rowNo]);
 
               saveData(numMapList[rowNo]);
+              Fluttertoast.showToast(
+                msg: '저장되었습니다.',
+                toastLength: Toast.LENGTH_SHORT
+              );
             },
           ),
         ),
