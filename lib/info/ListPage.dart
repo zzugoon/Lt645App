@@ -82,26 +82,30 @@ class _ListPageState extends State<ListPage> {
           children: [
             for(var i=0; i < numberList.length; i++)...[
               Card(
-                margin: EdgeInsets.all(5),
+                // margin: EdgeInsets.only(left: 5,right: 5 ,top: 5, bottom: 5),
                 shadowColor: Colors.grey,
+                elevation: 5.0,
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.only(left: 10.0,right: 10.0, top: 10.0, bottom: 0.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(numberList[i]['date']),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 10.0, left: 5.0),
+                        child: Text(numberList[i]['date']),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            numberRow(numberList[i]['idx1']),
-                            numberRow(numberList[i]['idx2']),
-                            numberRow(numberList[i]['idx3']),
-                            numberRow(numberList[i]['idx4']),
-                            numberRow(numberList[i]['idx5']),
-                            numberRow(numberList[i]['idx6']),
+                            numberRow(numberList[i]['idx1'], numberList[i]['color1']),
+                            numberRow(numberList[i]['idx2'], numberList[i]['color2']),
+                            numberRow(numberList[i]['idx3'], numberList[i]['color3']),
+                            numberRow(numberList[i]['idx4'], numberList[i]['color4']),
+                            numberRow(numberList[i]['idx5'], numberList[i]['color5']),
+                            numberRow(numberList[i]['idx6'], numberList[i]['color6']),
                           ],
                         ),
                       ),                      
@@ -127,98 +131,33 @@ class _ListPageState extends State<ListPage> {
                 )
               ),
             ]
-            // for(var i=0; i < numberList.length; i++)...[
-            //   if(i==0 || numberList[i]['date'] != numberList[i-1]['date'])...[
-            //     ListTile(
-            //       title: Text(numberList[i]['date']),
-            //       // subtitle: const Text('Tap here for Hero transition'),
-            //     ),
-            //   ],
-            //   Container(
-            //     margin: const EdgeInsets.all(5.0),
-            //     // decoration: BoxDecoration(
-            //     //   border: Border.all(color: Colors.black, width: 1),
-            //     // ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //       children: [
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx1'],),
-            //         ),
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx2'],),
-            //         ),
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx3'],),
-            //         ),
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx4'],),
-            //         ),
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx5'],),
-            //         ),
-            //         Container(width: 30,
-            //           alignment: Alignment.center,
-            //           child: Text(numberList[i]['idx6'],),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            //   Divider(color: Colors.black, height: 2,),
-            // ]
           ],
         ),
-
-        //   ListView.builder(
-        //   itemCount: itemCount,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return Padding(
-        //       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        //       child: OutlinedButton(
-        //         style: buttonStyle.copyWith(
-        //           backgroundColor: MaterialStatePropertyAll<Color>(Color.lerp(
-        //               destination.color[100],
-        //               Colors.white,
-        //               index / itemCount)!),
-        //         ),
-        //         onPressed: () {
-        //           Navigator.pushNamed(context, '/text');
-        //         },
-        //         child: Text('Push /text [$index]'),
-        //       ),
-        //     );
-        //   },
-        // ),
       ),
     );
   }
 
-  Widget numberRow(numText) {
+  Widget numberRow(numText, numColor) {
     return Container(
       height: 30,
       width: 30,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          // color: Color(numColor),
-          shape: BoxShape.circle,
-          // gradient: LinearGradient(
-          //     colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
-          //     stops: [0.1, 0.6],
-          //     begin: Alignment.topRight,
-          //     end: Alignment.bottomLeft
-          //
-          // )
-        // borderRadius: BorderRadius.circular(30)
+          color: Color(numColor),
+          // shape: BoxShape.circle,
+          gradient: LinearGradient(
+              colors: [Color(numColor).withOpacity(0.1), Color(numColor)],
+              stops: [0.1, 0.6],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft
+
+          ),
+          borderRadius: BorderRadius.circular(30)
       ),
       child: Text(numText,
         textAlign: TextAlign.center,
         style: const TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontFamily: "wel_Regular",
             fontSize: 13,
             fontWeight: FontWeight.normal

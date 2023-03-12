@@ -395,11 +395,18 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               ),
             ),
             onPressed: () {
-              print(numMapList[rowNo]);
+              // print(numMapList[rowNo]);
+              if(numMapList.length < rowNo+1){
+                Fluttertoast.showToast(
+                    msg: '저장할 데이터가 없습니다',
+                    toastLength: Toast.LENGTH_SHORT
+                );
+                return;
+              }
 
               saveData(numMapList[rowNo]);
               Fluttertoast.showToast(
-                msg: '저장되었습니다.',
+                msg: '저장 되었습니다',
                 toastLength: Toast.LENGTH_SHORT
               );
             },
@@ -694,8 +701,15 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       'idx4' : dataList[3]['number'],
       'idx5' : dataList[4]['number'],
       'idx6' : dataList[5]['number'],
+      'color1' : dataList[0]['color'],
+      'color2' : dataList[1]['color'],
+      'color3' : dataList[2]['color'],
+      'color4' : dataList[3]['color'],
+      'color5' : dataList[4]['color'],
+      'color6' : dataList[5]['color'],
     };
 
+    print('data :: $data');
     saveData?.add(data);
 
     // final file = File('data.json');
