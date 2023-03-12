@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bottom_sheet/bottom_sheet.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,6 +19,61 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
 
   late List numberList;
+  late List<Widget> numberList2;
+
+  final List _insSheetNumList = [7,7,7,7,7,7,3];
+  late List insSheetNumList;
+
+  @override
+  void initState() {
+    super.initState();
+
+    numberList = [];
+    numberList2 = [];
+    insSheetNumList = [];
+
+    setNumberList();
+    setSheetNumList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ButtonStyle buttonStyle = OutlinedButton.styleFrom(
+      // foregroundColor: destination.color,
+      fixedSize: const Size.fromHeight(128),
+      textStyle: Theme.of(context).textTheme.headlineSmall,
+    );
+
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('${destination.title} ListPage - /list'),
+      // ),
+      // backgroundColor: destination.color[50],
+      body: LayoutBuilder(builder: (context, constraint) {
+        return Swiper(
+          loop: false,
+          // layout: SwiperLayout.STACK,
+          pagination: const SwiperPagination(alignment: Alignment.bottomRight,
+            builder: SwiperPagination.dots,
+          ),
+          itemCount: numberList2.length,
+          itemBuilder: (BuildContext context, int index){
+            return numberList2[index];
+          },
+          index: 1,
+          scale: 0.9,
+          viewportFraction: 0.9,
+          itemWidth: constraint.biggest.width*0.8,
+          itemHeight: constraint.biggest.height*0.8,
+          control: const SwiperControl(
+            iconNext: Icons.arrow_forward_ios,
+            iconPrevious: Icons.arrow_back_ios_new_sharp,
+            color: Colors.black45,
+          ),
+        );
+      })
+    );
+  }
 
   //=== 파일 불러오기 ===
   Future<File> get _localFile async {
@@ -36,9 +93,22 @@ class _ListPageState extends State<ListPage> {
 
         if(jsonString != null || jsonString != 'null') {
           List<dynamic> data = jsonDecode(jsonString);
-          print(data); // data
 
-          return data;
+          List listData = [];
+          List tempData = [];
+
+          for(var i=0; i<data.length; i++){
+            if(i==0 || data[i]['date'] == data[i-1]['date']) {
+              tempData.add(data[i]);
+            } else {
+              listData.add(tempData);
+              tempData = [];
+              tempData.add(data[i]);
+            }
+          }
+          listData.add(tempData);
+
+          return listData;
         }
       }
     } catch (e) {
@@ -50,92 +120,165 @@ class _ListPageState extends State<ListPage> {
 
   setNumberList() async {
     List<dynamic>? tempList = await loadData();
+    numberList = tempList!;
+
     setState(() {
-      numberList = tempList!;
+      numberList2 = createSwipeList(numberList);
+      print(numberList2);
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
+  setSheetNumList() {
+    List resultList = [];
+    List<int> tempList = [];
 
-    numberList = [];
-    setNumberList();
+    for(var i=1; i<50; i++) {
+      tempList.add(i);
+      if(i%7 == 0 && i<50) {
+        resultList.add(tempList);
+        tempList = [];
+      }
+    }
+    insSheetNumList = resultList;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    const int itemCount = 20;
-    final ButtonStyle buttonStyle = OutlinedButton.styleFrom(
-      // foregroundColor: destination.color,
-      fixedSize: const Size.fromHeight(128),
-      textStyle: Theme.of(context).textTheme.headlineSmall,
-    );
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('${destination.title} ListPage - /list'),
-      // ),
-      // backgroundColor: destination.color[50],
-      body: SizedBox.expand(
-        child: ListView(
-          padding: EdgeInsets.only(left: 20.0, right: 20.0),
-          children: [
-            for(var i=0; i < numberList.length; i++)...[
-              Card(
-                // margin: EdgeInsets.only(left: 5,right: 5 ,top: 5, bottom: 5),
-                shadowColor: Colors.grey,
-                elevation: 5.0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10.0,right: 10.0, top: 10.0, bottom: 0.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 10.0, left: 5.0),
-                        child: Text(numberList[i]['date']),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  List<Widget> createSwipeList(numberList) {
+    List<Widget> resultList = [];
+    late Widget? tempWidget;
+    
+    for(var j=0; j<numberList.length; j++) {
+      tempWidget =
+        SizedBox.expand(
+          child: ListView(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
+            children: [
+              for(var i=0; i<numberList[j].length; i++)...[
+                Card(
+                  shadowColor: Colors.grey,
+                  // margin: EdgeInsets.only(left: 5,right: 5 ,top: 5, bottom: 5),
+                  elevation: 5.0,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0,right: 10.0, top: 10.0, bottom: 1.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 10.0, left: 5.0),
+                          child: Text(numberList[j][i]['date']),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              numberRow(numberList[j][i]['idx1'], numberList[j][i]['color1']),
+                              numberRow(numberList[j][i]['idx2'], numberList[j][i]['color2']),
+                              numberRow(numberList[j][i]['idx3'], numberList[j][i]['color3']),
+                              numberRow(numberList[j][i]['idx4'], numberList[j][i]['color4']),
+                              numberRow(numberList[j][i]['idx5'], numberList[j][i]['color5']),
+                              numberRow(numberList[j][i]['idx6'], numberList[j][i]['color6']),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            numberRow(numberList[i]['idx1'], numberList[i]['color1']),
-                            numberRow(numberList[i]['idx2'], numberList[i]['color2']),
-                            numberRow(numberList[i]['idx3'], numberList[i]['color3']),
-                            numberRow(numberList[i]['idx4'], numberList[i]['color4']),
-                            numberRow(numberList[i]['idx5'], numberList[i]['color5']),
-                            numberRow(numberList[i]['idx6'], numberList[i]['color6']),
+                            TextButton(
+                              onPressed: () {
+                                showFlexibleBottomSheet(
+                                  draggableScrollableController: DraggableScrollableController(),
+                                  bottomSheetColor: Colors.white,
+                                  minHeight: 0,
+                                  initHeight: 0.8,
+                                  maxHeight: 0.8,
+                                  context: context,
+                                  builder: _buildBottomSheet,
+                                  isExpand: false,
+                                );
+                              },
+                              child: const Text('보기')
+                            ),
                           ],
                         ),
-                      ),                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                              onPressed: () {
+                      ],
+                    ),
+                  )
+                ),
+              ]
+            ],
+          ),
+        );
 
-                              },
-                              child: Text('보기')
-                          ),
-                          TextButton(
-                              onPressed: () {
+      resultList.add(tempWidget);
+      tempWidget = null;
+    }
+    
+    return resultList; 
+  }
 
-                              },
-                              child: Text('삭제')
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
+  Widget _buildBottomSheet(
+      BuildContext context, ScrollController scrollController, double bottomSheetOffset) {
+    return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: Container(
+          color: Colors.cyanAccent,
+          margin: EdgeInsets.all(20.0),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+                child: Text('번호선택 작성 표'),
               ),
-            ]
-          ],
+              for(var i=0; i<insSheetNumList.length; i++)...[
+                const SizedBox(
+                  height: 5.0,
+                ),
+                createSheetRow(insSheetNumList[i]),
+              ]
+            ],
+          )
         ),
+      );
+  }
+
+  createSheetRow(paramList) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        for(var i=0; i<paramList.length; i++)
+          if(paramList[i] < 46)...[
+            createSheetRowText(paramList[i])
+          ]else...[
+            Container(width: 28, height: 28,)
+          ]
+      ],
+    );
+  }
+
+  createSheetRowText(param) {
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+          border: Border.all(width: 1),
+          shape: BoxShape.rectangle,
+          // You can use like this way or like the below line
+          //borderRadius: new BorderRadius.circular(30.0),
+          // color: changePartialColor(idx, listIndex, selections)
+      ),
+      alignment: Alignment.center,
+      child: Text((param).toString(),
+      //   style: TextStyle(
+      //     color: selections[idx][listIndex] ? Colors.white : Colors.black38,
+      //   ),
       ),
     );
   }
+
 
   Widget numberRow(numText, numColor) {
     return Container(

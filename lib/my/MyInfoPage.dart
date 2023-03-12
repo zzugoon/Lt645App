@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lt645/my/SaveNumberData.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../destination/destination.dart';
 
@@ -16,14 +22,14 @@ class _MyInfoPageState extends State<MyInfoPage> {
   late final TextEditingController textController;
 
   List listTitle = [
-    '생성번호'
+    '저장목록'
     ,'분석, 통계'
     ,'기타'
   ];
   List listSubstance = [
-    ['저장목록', '삭제']
-    ,['당첨번호 회수','연속 당첨 숫자', '10 단위별 빈도']
-    ,['설정', '인증하기', '키워드',' 자주 묻는 질문', '친구초대']
+    ['목록편집', '모두삭제']
+    ,['당첨번호 회수[X]','연속 당첨 숫자[X]', '10 단위별 빈도[X]']
+    ,['설정[X]', '인증하기[X]', '키워드[X]',' 자주 묻는 질문[X]', '친구초대[X]']
   ];
   List listIcon = [
     Icons.wb_sunny
@@ -102,7 +108,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
 
                         });
                       },
-                      child: Text("프로필 보기",
+                      child: const Text("프로필 보기",
                         style: TextStyle(fontSize: 10.0),
                       ),
                     ),
@@ -112,14 +118,38 @@ class _MyInfoPageState extends State<MyInfoPage> {
               Container(
 
               ),
-              Divider(
+              const Divider(
                 height: 5,
               ),
+              ListTile(
+                title: Text(listTitle[0]),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: listSubstance[0].length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Icon(listIcon[divideModulo(index, listSubstance[0].length)]),
+                    title: Text(listSubstance[0][index]),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                    onTap: () {
+                      if(index == 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SaveNumberData()),
+                        );
+                      } else if(index ==1) {
+                        _cupertinoDialog(context, '저장한 데이터를 모두 삭제 하시겠습니까?');
+                      }
+                    },
+                  );
+                },
+              ),
               ListView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  for(var i=0; i<listTitle.length; i++)...[
+                  for(var i=1; i<listTitle.length; i++)...[
                     ListTile(
                       title: Text(listTitle[i]),
                     ),
@@ -127,39 +157,80 @@ class _MyInfoPageState extends State<MyInfoPage> {
                       ListTile(
                         leading: Icon(listIcon[divideModulo(j, listSubstance[i].length)]),
                         title: Text(listSubstance[i][j]),
-                        trailing: Icon(Icons.keyboard_arrow_right),
+                        trailing: const Icon(Icons.keyboard_arrow_right),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SaveNumberData()),
+                          );
+
+                          setState(() {
+
+                          });
+                        },
                       ),
                     ],
-                    Divider(height: 5,)
+                    const Divider(height: 5,)
                   ],
                 ]
-                //   ListTile.divideTiles(
-                //   tiles: [
-                //     for(var i=0; i<10; i++) ... [
-                //       ListTile(
-                //         leading: Icon(Icons.wb_sunny),
-                //         title: Text('Sun'),
-                //         trailing: Icon(Icons.keyboard_arrow_right),
-                //       ),
-                //       ListTile(
-                //         leading: Icon(Icons,wb_sunny, brightness_3, star),
-                //         title: Text('Moon'),
-                //         trailing: Icon(Icons.keyboard_arrow_right),
-                //       ),
-                //       ListTile(
-                //         leading: Icon(Icons.star),
-                //         title: Text('Star'),
-                //         trailing: Icon(Icons.keyboard_arrow_right),
-                //       ),
-                //     ]
-                //   ],
-                // ).toList(),
               ),
             ],
           ),
         ),
       )
     );
+  }
+
+  void _cupertinoDialog(BuildContext context, String msg) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('ALERT'),
+        content: Text(msg),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('취소'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('확인'),
+            onPressed: () {
+              deleteAllData();
+
+              Navigator.pop(context);
+              Fluttertoast.showToast(
+                  msg: '삭제가 완료되었습니다',
+                  toastLength: Toast.LENGTH_SHORT
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  //=== 파일 저장 ===
+  Future<File> get _localFile async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    final path = directory.path;
+    return File('$path/data.json');
+  }
+
+  Future<File> deleteAllData() async {
+    print("saveData");
+    List<dynamic>? saveData = [];
+
+    // print('data :: $data');
+    // saveData?.add(data);
+
+    final file = await _localFile;
+
+    return file.writeAsString(jsonEncode(saveData));
   }
 
   divideModulo(a, b) {

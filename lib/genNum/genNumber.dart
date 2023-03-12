@@ -71,7 +71,7 @@ class GenNumber {
     for(var i=0; i<CREATE_NUMBER; i++) {
       genRanNum = Random().nextInt(keyNo);
       genRanNum = genRanNum + 1;
-      print('genRanNum :: $genRanNum');
+      // print('genRanNum :: $genRanNum');
       if(0 <= ranNumList.indexOf(genRanNum) || 0 <= banList.indexOf(genRanNum)) {
         i=i-1;
       }else{

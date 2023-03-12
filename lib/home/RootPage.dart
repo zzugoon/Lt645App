@@ -694,7 +694,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
     // 데이터 저장하기
     Map<String, dynamic> data = {
-      'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      // 'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'date' : '2023-03-14',
       'idx1' : dataList[0]['number'],
       'idx2' : dataList[1]['number'],
       'idx3' : dataList[2]['number'],
@@ -709,7 +710,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       'color6' : dataList[5]['color'],
     };
 
-    print('data :: $data');
     saveData?.add(data);
 
     // final file = File('data.json');
@@ -729,7 +729,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
         if(jsonString != null || jsonString != 'null') {
           List<dynamic> data = jsonDecode(jsonString);
-          print(data); // data
 
           return data;
         }
