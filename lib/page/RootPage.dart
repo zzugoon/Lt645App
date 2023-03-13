@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saf/saf.dart';
 import 'package:shared_storage/shared_storage.dart';
 
 import '../common/dialog.dart';
@@ -47,6 +46,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   CommonDialog commonDialog = CommonDialog();
   CommonGenNumber commonGenNumber = CommonGenNumber();
+
+  List<bool> isSwitched = [true,false];
+  List<bool> isChecked = [true,false,false,false,false];
 
   @override
   void initState() {
@@ -321,7 +323,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               stops: [0.1, 0.6],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft
-
           )
         // borderRadius: BorderRadius.circular(30)
       ),
@@ -418,133 +419,353 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   tabItemRange () {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: [Container( ////////////////// selectRange //////////////////
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 1,
-              child: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(right: 10.0),
-                height: 30,
-                child: const Text("생성 범위",
-                  // style: TextStyle(
-                  //   fontFamily: "on_goelip",
-                  //   fontSize: 20,
-                  //   fontWeight: FontWeight.normal
-                  // )
-                ),
-              )
-            ),
-            Flexible(
-            fit: FlexFit.tight,
-            child: Container(
-              height: 30,
-              padding: EdgeInsets.only(right: 10.0),
-              child: TextField(
-                readOnly: true,
-                controller: getMinNum,
-                onTap: () => {
-                  numberPickerDialog(context, getMinNum.text, 'min')
-                },
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                  // labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
-                  labelText: "최소값",
-                  ),
-                ),
-              )
-            ),
-            Flexible(
-            fit: FlexFit.tight,
-            child: Container(
-              height: 30,
-              padding: EdgeInsets.only(right: 10.0),
-              child: TextField(
-                readOnly: true,
-                controller: getMaxNum,
-                onTap: () => {
-                  numberPickerDialog(context, getMaxNum.text, 'max')
-                },
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                // labelStyle: const TextStyle(
-                //   fontFamily: "on_goelip",
-                //   fontSize: 25,
-                //   fontWeight:
-                //   FontWeight.normal
-                //   ),
-                labelText: "최대값",
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 5.0),
+          child: Text('생성할 숫자 범위를 정하여 추첨번호를 생성합니다',
+              style: TextStyle(fontSize: 12)),
+        ),
+        Container(
+          height: 50,
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 1,
+                child: Switch(
+                  value: isSwitched[0],
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched[0] = value;
+                      isSwitched[1] = !value;
+                    });
+                  },
+                  activeColor: Colors.red,
                 ),
               ),
-            )
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              child: Container(
-                alignment: Alignment.center,
-                height: 30,
-                child: const Text("당첨 확률 : ",
-                style: TextStyle(
-                  // fontFamily: "on_goelip",
-                  fontSize: 10,
-                  fontWeight: FontWeight.normal
-                  )
-                ),
-              )
-            ),
-            Flexible(
-            fit: FlexFit.tight,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              height: 30,
-              child: Text('1 / $rangePercent',
-                style: const TextStyle(
-                  // fontFamily: "on_goelip",
-                  fontSize: 10,
-                  fontWeight: FontWeight.normal
-                  )
-                ),
-              )
-            ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(right: 10.0),
+                  height: 30,
+                  child: const Text("생성 범위",
+                    // style: TextStyle(
+                    //   fontFamily: "on_goelip",
+                    //   fontSize: 20,
+                    //   fontWeight: FontWeight.normal
+                    // )
+                  ),
+                )
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: AbsorbPointer(
+                  absorbing: !isSwitched[0],
+                  child: Container(
+                    height: 30,
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: getMinNum,
+                      onTap: () => {
+                        numberPickerDialog(context, getMinNum.text, 'min')
+                      },
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        // labelStyle: TextStyle(fontFamily: "on_goelip", fontSize: 25, fontWeight: FontWeight.normal),
+                        labelText: "최소값",
+                      ),
+                    ),
+                  ),
+                )
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: AbsorbPointer(
+                 absorbing: !isSwitched[0],
+                 child: Container(
+                   height: 30,
+                   padding: EdgeInsets.only(right: 10.0),
+                   child: TextField(
+                     readOnly: true,
+                     controller: getMaxNum,
+                     onTap: () => {
+                       numberPickerDialog(context, getMaxNum.text, 'max')
+                     },
+                     style: Theme.of(context).textTheme.bodySmall,
+                     textAlign: TextAlign.center,
+                     decoration: InputDecoration(
+                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                       // labelStyle: const TextStyle(
+                       //   fontFamily: "on_goelip",
+                       //   fontSize: 25,
+                       //   fontWeight:
+                       //   FontWeight.normal
+                       //   ),
+                       labelText: "최대값",
+                     ),
+                   ),
+                 ),
+                )
+              ),
             ],
           ),
         ),
-        sizeBox(0.0, 10.0),
-        Container( ////////////////// ballImage //////////////////
-          height: 80,
-          margin: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
-          child: Column(
+        Container(
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+          height: 30,
+          // color: Colors.deepOrange,
+          child: Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  for(var i=1; i<6; i++)...[
-                    ballNoImage(i),
-                  ],
-                  sizeBox(10.0, 20.0),
-                ],
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 1,
+                child: Switch(
+                  value: isSwitched[1],
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched[1] = value;
+                      isSwitched[0] = !value;
+                    });
+                  },
+                  activeColor: Colors.red,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  sizeBox(20.0, 10.0),
-                  for(var i=6; i<10; i++)...[
-                    ballNoImage(i),
+              Flexible(
+                  fit: FlexFit.tight,
+                  flex: 2,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: const Text("단위 지정",
+                    ),
+                  )
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: isChecked[0],
+                      onChanged: (value) {
+                        setState(() {
+                          isChecked[0] = value!;
+                        });
+                      },
+                    ),
+                    const Text('1~10'),
                   ],
-                  ballNoImage(0),
-                ],
-              )
-            ],
-          )
+                ),
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: isChecked[1],
+                      onChanged: (value) {
+                        setState(() {
+                          isChecked[1] = value!;
+                        });
+                      },
+                    ),
+                    const Text('11~20'),
+                  ],
+                ),
+              ),
+            ]
+          ),
         ),
+        Container(
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+          // color: Colors.purple,
+          height: 30,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(),
+              ),
+
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: isChecked[2],
+                      onChanged: (value) {
+                        setState(() {
+                          isChecked[2] = value!;
+                        });
+                      },
+                    ),
+                    const Text('21~30'),
+                  ],
+                ),
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.0,
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[3],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[3] = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    const Text('31~40'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+          // color: Colors.amber,
+          height: 30,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(),
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      activeColor: Colors.white,
+                      checkColor: Colors.blue,
+                      value: isChecked[4],
+                      onChanged: (value) {
+                        setState(() {
+                          isChecked[4] = value!;
+                        });
+                      },
+                    ),
+                    const Text('41~45'),
+                  ],
+                ),
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 2,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.0,
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[4],
+                        onChanged: (value) {
+                          setState(() {
+                            for(var i=0; i<isChecked.length; i++) {
+                              isChecked[i] = value!;
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    const Text('전체선택'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        sizeBox(10.0, 20.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              height: 30,
+              child: const Text("당첨 확률 : ",
+                  style: TextStyle(
+                    // fontFamily: "on_goelip",
+                    //   fontSize: 10,
+                      fontWeight: FontWeight.normal
+                  )
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              height: 30,
+              child: Text('1 / $rangePercent',
+                  style: const TextStyle(
+                    // fontFamily: "on_goelip",
+                    //   fontSize: 10,
+                      fontWeight: FontWeight.normal
+                  )
+              ),
+            ),
+          ],
+        ),
+        // Container( ////////////////// ballImage //////////////////
+        //   height: 80,
+        //   margin: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+        //   child: Column(
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //         children: <Widget>[
+        //           for(var i=1; i<6; i++)...[
+        //             ballNoImage(i),
+        //           ],
+        //           sizeBox(10.0, 20.0),
+        //         ],
+        //       ),
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //         children: <Widget>[
+        //           sizeBox(20.0, 10.0),
+        //           for(var i=6; i<10; i++)...[
+        //             ballNoImage(i),
+        //           ],
+        //           ballNoImage(0),
+        //         ],
+        //       )
+        //     ],
+        //   )
+        // ),
       ],
     );
   }
@@ -558,9 +779,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
         children: [
           // sizeBox(0.0, 10.0),
           const Text('선택한 숫자를 포함하여 추첨번호를 생성합니다',
-          style: TextStyle(fontSize: 12)),
+            style: TextStyle(fontSize: 12)),
           const Text('(최대 6개 선택 가능)',
-              style: TextStyle(fontSize: 10)),
+            style: TextStyle(fontSize: 10)),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
             createToggleButtons(_lotteryNumberList[i], i, partialSelections),
           ]
@@ -578,7 +799,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
           const Text('선택한 숫자를 제외하여 추첨번호를 생성합니다',
             style: TextStyle(fontSize: 12)),
           const Text('(최대 20개 선택 가능)',
-              style: TextStyle(fontSize: 10)),
+            style: TextStyle(fontSize: 10)),
           for(var i=0; i<_lotteryNumberList.length; i++)...[
             sizeBox(0.0, 1.0),
             createToggleButtons(_lotteryNumberList[i], i, unPartialSelections),
