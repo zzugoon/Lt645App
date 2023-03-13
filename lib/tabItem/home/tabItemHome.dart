@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import '../../genNum/genNumber.dart';
-import '../../home/RootPage.dart';
+import '../../page/RootPage.dart';
 
 class HomeTabItem {
 

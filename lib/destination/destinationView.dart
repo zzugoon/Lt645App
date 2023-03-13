@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../home/RootPage.dart';
-import '../info/ListPage.dart';
-import '../my/MyInfoPage.dart';
+import '../page/RootPage.dart';
+import '../page/ListPage.dart';
+import '../page/MyInfoPage.dart';
 import 'destination.dart';
 
 class DestinationView extends StatefulWidget {

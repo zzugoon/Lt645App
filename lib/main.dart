@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lt645/result/ResultPage.dart';
+import 'package:lt645/page/ResultPage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'destination/destination.dart';
-import 'home/RootPage.dart';
-import 'info/ListPage.dart';
-import 'my/MyInfoPage.dart';
+import 'page/RootPage.dart';
+import 'page/ListPage.dart';
+import 'page/MyInfoPage.dart';
 
 Future<void> main() async {
   runApp(const Lt645App());

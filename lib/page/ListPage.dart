@@ -21,7 +21,6 @@ class _ListPageState extends State<ListPage> {
   late List numberList;
   late List<Widget> numberList2;
 
-  final List _insSheetNumList = [7,7,7,7,7,7,3];
   late List insSheetNumList;
 
   @override

@@ -4,10 +4,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:lt645/my/SaveNumberData.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:lt645/common/dialog.dart';
 
 import '../destination/destination.dart';
+import 'myInfoPage/SaveNumberData.dart';
 
 class MyInfoPage extends StatefulWidget {
   const MyInfoPage({super.key, required this.destination});
@@ -19,7 +20,7 @@ class MyInfoPage extends StatefulWidget {
 }
 
 class _MyInfoPageState extends State<MyInfoPage> {
-  late final TextEditingController textController;
+  CommonDialog commonDialog = CommonDialog();
 
   List listTitle = [
     '저장목록'
@@ -42,12 +43,10 @@ class _MyInfoPageState extends State<MyInfoPage> {
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController(text: 'Sample Text');
   }
 
   @override
   void dispose() {
-    textController.dispose();
     super.dispose();
   }
 
@@ -139,7 +138,22 @@ class _MyInfoPageState extends State<MyInfoPage> {
                           MaterialPageRoute(builder: (context) => const SaveNumberData()),
                         );
                       } else if(index ==1) {
-                        _cupertinoDialog(context, '저장한 데이터를 모두 삭제 하시겠습니까?');
+                        // _cupertinoDialog(context, '저장한 데이터를 모두 삭제 하시겠습니까?');
+                        CupertinoDialogAction dialogActionYes = CupertinoDialogAction(
+                          isDefaultAction: true,
+                          child: const Text('확인'),
+                          onPressed: () {
+                            deleteAllData();
+
+                            Navigator.pop(context);
+                            Fluttertoast.showToast(
+                                msg: '삭제가 완료되었습니다',
+                                toastLength: Toast.LENGTH_SHORT
+                            );
+                          },
+                        );
+
+                        commonDialog.cupertinoDialogConfirm(context, '저장한 데이터를 모두 삭제 하시겠습니까?', dialogActionYes);
                       }
                     },
                   );
@@ -181,37 +195,37 @@ class _MyInfoPageState extends State<MyInfoPage> {
     );
   }
 
-  void _cupertinoDialog(BuildContext context, String msg) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('ALERT'),
-        content: Text(msg),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: const Text('취소'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: const Text('확인'),
-            onPressed: () {
-              deleteAllData();
-
-              Navigator.pop(context);
-              Fluttertoast.showToast(
-                  msg: '삭제가 완료되었습니다',
-                  toastLength: Toast.LENGTH_SHORT
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // void _cupertinoDialog(BuildContext context, String msg) {
+  //   showCupertinoModalPopup<void>(
+  //     context: context,
+  //     builder: (BuildContext context) => CupertinoAlertDialog(
+  //       title: const Text('ALERT'),
+  //       content: Text(msg),
+  //       actions: <CupertinoDialogAction>[
+  //         CupertinoDialogAction(
+  //           isDefaultAction: true,
+  //           child: const Text('취소'),
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //         ),
+  //         CupertinoDialogAction(
+  //           isDefaultAction: true,
+  //           child: const Text('확인'),
+  //           onPressed: () {
+  //             deleteAllData();
+  //
+  //             Navigator.pop(context);
+  //             Fluttertoast.showToast(
+  //                 msg: '삭제가 완료되었습니다',
+  //                 toastLength: Toast.LENGTH_SHORT
+  //             );
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   //=== 파일 저장 ===
   Future<File> get _localFile async {

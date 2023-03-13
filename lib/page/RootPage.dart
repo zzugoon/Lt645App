@@ -13,7 +13,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:saf/saf.dart';
 import 'package:shared_storage/shared_storage.dart';
 
-import '../genNum/genNumber.dart';
+import '../common/dialog.dart';
+import '../common/genNumber.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -23,7 +24,6 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
-  static const int _lotteryNumber = 45;
   static const List<int> _lotteryNumberList = [0,10,20,30,40];
 
   late List<List<bool>> partialSelections;
@@ -44,6 +44,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
+
+  CommonDialog commonDialog = CommonDialog();
+  CommonGenNumber commonGenNumber = CommonGenNumber();
 
   @override
   void initState() {
@@ -74,10 +77,9 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
     var minNum = getMinNum.text;
     var maxNum = getMaxNum.text;
-    GenNumber genNumber = GenNumber();
 
     var numFormat = NumberFormat('###,###,###,###');
-    rangePercent = numFormat.format(genNumber.calRate(int.parse(minNum), int.parse(maxNum)));
+    rangePercent = numFormat.format(commonGenNumber.calRate(int.parse(minNum), int.parse(maxNum)));
 
     return Scaffold(
         body: Column(
@@ -103,7 +105,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
                         //-validation
                         if(numMapList.length > 4) {
-                          _cupertinoDialog(context, '최대로 생성 가능한 번호는 5개 입니다.');
+                          commonDialog.cupertinoDialogAlert(context, '최대로 생성 가능한 번호는 5개 입니다.');
                           return;
                         }
 
@@ -114,14 +116,13 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           var subNum = int.parse(maxNum) - int.parse(minNum);
 
                           if(subNum < 10) {
-                            _cupertinoDialog(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
+                            commonDialog.cupertinoDialogAlert(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
                             return;
                           }
                           setState(() {
                             // ==== "번호 생성하기 start" ====
-                            GenNumber genNumber = GenNumber();
                             numMapList.add(
-                                genNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
+                                commonGenNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
                             // ===== "번호 생성하기 end" =====
                           });
 
@@ -131,7 +132,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           var numberList = [];
 
                           if(boolCountList.length > 6) {
-                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다.');
+                            commonDialog.cupertinoDialogAlert(context, '선택한 번호가 너무 많습니다');
                             return;
                           }
 
@@ -141,9 +142,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
                           setState(() {
                             // ==== "번호 생성하기 start" ====
-                            GenNumber genNumber = GenNumber();
                             numMapList.add(
-                                genNumber.fn_genNumTypeB(numberList));
+                                commonGenNumber.fn_genNumTypeB(numberList));
                             // ===== "번호 생성하기 end" =====
                           });
 
@@ -153,7 +153,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                           var numberList = [];
 
                           if(boolCountList.length > 20) {
-                            _cupertinoDialog(context, '선택한 번호가 너무 많습니다.');
+                            commonDialog.cupertinoDialogAlert(context, '선택한 번호가 너무 많습니다');
                             return;
                           }
 
@@ -163,9 +163,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
                           setState(() {
                             // ==== "번호 생성하기 start" ====
-                            GenNumber genNumber = GenNumber();
                             numMapList.add(
-                                genNumber.fn_genNumTypeC(numberList));
+                                commonGenNumber.fn_genNumTypeC(numberList));
                             // ===== "번호 생성하기 end" =====
                           });
                         }
@@ -179,7 +178,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       style: FilledButton.styleFrom(
                           backgroundColor: Colors.grey[600],
-                          minimumSize: Size(50, 40)
+                          minimumSize: const Size(50, 40)
                       ),
                       child: const Text('초기화',
                           style: TextStyle(
@@ -740,63 +739,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     return null;
   }
 
-  // Future<void> exportFile({
-  //   required String csvData,
-  //   required String fileName,
-  // }) async {
-  //   Uri? selectedUriDir;
-  //   final pref = await SharedPreferences.getInstance();
-  //   final scopeStoragePersistUrl = pref.getString('scopeStoragePersistUrl');
-  //
-  //   // Check User has already grant permission to any directory or not
-  //   if (scopeStoragePersistUrl != null &&
-  //       await isPersistedUri(Uri.parse(scopeStoragePersistUrl)) &&
-  //       (await exists(Uri.parse(scopeStoragePersistUrl)) ?? false)) {
-  //     selectedUriDir = Uri.parse(scopeStoragePersistUrl);
-  //   } else {
-  //     selectedUriDir = await openDocumentTree();
-  //     await pref.setString('scopeStoragePersistUrl', selectedUriDir.toString());
-  //   }
-  //   if (selectedUriDir == null) {
-  //     return false;
-  //   }
-  //   try {
-  //     final existingFile = await findFile(selectedUriDir, fileName);
-  //     if (existingFile != null && existingFile.isFile) {
-  //       debugPrint("Found existing file ${existingFile.uri}");
-  //       await delete(existingFile.uri);
-  //     }
-  //     final newDocumentFile = await createFileAsString(
-  //       selectedUriDir,
-  //       mimeType: AppConstants.csvMimeTypeWhileExport,
-  //       content: csvData,
-  //       displayName: fileName,
-  //     );
-  //     return newDocumentFile != null;
-  //   } catch (e) {
-  //     debugPrint("Exception while create new file: ${e.toString()}");
-  //     return false;
-  //   }
-  // }
-
-  tempWrite() async {
-    var tempSaf = await Saf.getDynamicDirectoryPermission();
-
-    var myFile = File('file.txt');
-
-    final filename = 'file.txt';
-    var file = await File(filename).writeAsString('some content');
-
-    print(file);
-
-  }
-
-  tempRead() {
-    File('file.txt').readAsString().then((String contents) {
-      print(contents);
-    });
-  }
-
   Future<void> createFileBySAF(String fileName, Uint8List uint8list) async {
 
     /*From: shared_storage: ^0.2.0*/
@@ -811,67 +753,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       'directoryUri': '$uri',
     });
     print(result);
-  }
-
-  /*==================================
-  ============= alert ================
-  ==================================*/
-
-  void _flutterDialog() {
-    showDialog(
-        context: context,
-        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            //Dialog Main Title
-            title: Column(
-              children: <Widget>[
-                new Text("Dialog Title"),
-              ],
-            ),
-            //
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Dialog Content",
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              FilledButton(
-                child: new Text("확인"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  void _cupertinoDialog(BuildContext context, String msg) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('ALERT'),
-        content: Text(msg),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: const Text('확인'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   void numberPickerDialog(BuildContext context, paramNum, paramType) {
@@ -918,9 +799,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
               setState(() {
                 var numFormat = NumberFormat('###,###,###,###');
-                GenNumber genNumber = GenNumber();
-
-                rangePercent = numFormat.format(genNumber.calRate(int.parse(getMinNum.text), int.parse(getMaxNum.text)));
+                rangePercent = numFormat.format(commonGenNumber.calRate(int.parse(getMinNum.text), int.parse(getMaxNum.text)));
               });
 
               Navigator.pop(context);

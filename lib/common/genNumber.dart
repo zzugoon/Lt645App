@@ -4,9 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class GenNumber {
-  dynamic testDynamicNo;
-  var testVarNo;
+class CommonGenNumber {
 
   List<Map> fn_genNumTypeA(int minNo, int maxNo, {keyNo1, keyNo2}) {
     const int CREATE_NUMBER = 6;  // 생성할 번호 갯수
