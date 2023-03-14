@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:lt645/model/BallNumberImage.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_storage/shared_storage.dart';
 
 import '../common/dialog.dart';
 import '../common/genNumber.dart';
@@ -48,7 +47,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   CommonGenNumber commonGenNumber = CommonGenNumber();
 
   List<bool> isSwitched = [true,false];
-  List<bool> isChecked = [true,false,false,false,false];
+  List<bool> isChecked = [true,true,true,true,true,true];
 
   @override
   void initState() {
@@ -113,20 +112,40 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
                         //-tab index 별 생성 로직
                         if(_tabController.index == 0) {
-                          var minNum = getMinNum.text;
-                          var maxNum = getMaxNum.text;
-                          var subNum = int.parse(maxNum) - int.parse(minNum);
+                          if(isSwitched[0] == true) {
+                            var minNum = getMinNum.text;
+                            var maxNum = getMaxNum.text;
+                            var subNum = int.parse(maxNum) - int.parse(minNum);
 
-                          if(subNum < 10) {
-                            commonDialog.cupertinoDialogAlert(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
-                            return;
+                            if(subNum < 10) {
+                              commonDialog.cupertinoDialogAlert(context, '생성할 번호 범위가 너무 작습니다.(최소 10 이상)');
+                              return;
+                            }
+                            setState(() {
+                              // ==== "번호 생성하기 start" ====
+                              numMapList.add(
+                                  commonGenNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
+                              // ===== "번호 생성하기 end" =====
+                            });
+                          } else {
+                            var chkBool = [];
+                            for(var i in isChecked) {
+                              if(i == true) {
+                                chkBool.add(true);
+                              }
+                            }
+                            if(chkBool.length<2) {
+                              commonDialog.cupertinoDialogAlert(context, '생성할 번호 범위를 두개 이상 선택해 주세요');
+                              return;
+                            }
+
+                            setState(() {
+                              // ==== "번호 생성하기 start" ====
+                              numMapList.add(
+                                  commonGenNumber.fn_genNumTypeD(isChecked));
+                              // ===== "번호 생성하기 end" =====
+                            });
                           }
-                          setState(() {
-                            // ==== "번호 생성하기 start" ====
-                            numMapList.add(
-                                commonGenNumber.fn_genNumTypeA(int.parse(minNum), int.parse(maxNum)));
-                            // ===== "번호 생성하기 end" =====
-                          });
 
                         } else if(_tabController.index == 1) {
                           var tempList = partialSelections.expand((x) => x).toList();
@@ -554,15 +573,19 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Checkbox(
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: isChecked[0],
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked[0] = value!;
-                        });
-                      },
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[0],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[0] = value!;
+                            checkBoxBool();
+                          });
+                        },
+                      ),
                     ),
                     const Text('1~10'),
                   ],
@@ -573,15 +596,19 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Checkbox(
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: isChecked[1],
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked[1] = value!;
-                        });
-                      },
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[1],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[1] = value!;
+                            checkBoxBool();
+                          });
+                        },
+                      ),
                     ),
                     const Text('11~20'),
                   ],
@@ -611,15 +638,19 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Checkbox(
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: isChecked[2],
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked[2] = value!;
-                        });
-                      },
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[2],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[2] = value!;
+                            checkBoxBool();
+                          });
+                        },
+                      ),
                     ),
                     const Text('21~30'),
                   ],
@@ -630,8 +661,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Transform.scale(
-                      scale: 1.0,
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
                       child: Checkbox(
                         activeColor: Colors.white,
                         checkColor: Colors.blue,
@@ -639,6 +670,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                         onChanged: (value) {
                           setState(() {
                             isChecked[3] = value!;
+                            checkBoxBool();
                           });
                         },
                       ),
@@ -670,15 +702,19 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Checkbox(
-                      activeColor: Colors.white,
-                      checkColor: Colors.blue,
-                      value: isChecked[4],
-                      onChanged: (value) {
-                        setState(() {
-                          isChecked[4] = value!;
-                        });
-                      },
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
+                      child: Checkbox(
+                        activeColor: Colors.white,
+                        checkColor: Colors.blue,
+                        value: isChecked[4],
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked[4] = value!;
+                            checkBoxBool();
+                          });
+                        },
+                      ),
                     ),
                     const Text('41~45'),
                   ],
@@ -689,19 +725,22 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 flex: 2,
                 child: Row(
                   children: [
-                    Transform.scale(
-                      scale: 1.0,
-                      child: Checkbox(
-                        activeColor: Colors.white,
-                        checkColor: Colors.blue,
-                        value: isChecked[4],
-                        onChanged: (value) {
-                          setState(() {
-                            for(var i=0; i<isChecked.length; i++) {
-                              isChecked[i] = value!;
-                            }
-                          });
-                        },
+                    AbsorbPointer(
+                      absorbing: !isSwitched[1],
+                      child: Transform.scale(
+                        scale: 1.0,
+                        child: Checkbox(
+                          activeColor: Colors.white,
+                          checkColor: Colors.blue,
+                          value: isChecked[5],
+                          onChanged: (value) {
+                            setState(() {
+                              for(var i=0; i<isChecked.length; i++) {
+                                isChecked[i] = value!;
+                              }
+                            });
+                          },
+                        ),
                       ),
                     ),
                     const Text('전체선택'),
@@ -739,33 +778,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
             ),
           ],
         ),
-        // Container( ////////////////// ballImage //////////////////
-        //   height: 80,
-        //   margin: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
-        //   child: Column(
-        //     children: [
-        //       Row(
-        //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //         children: <Widget>[
-        //           for(var i=1; i<6; i++)...[
-        //             ballNoImage(i),
-        //           ],
-        //           sizeBox(10.0, 20.0),
-        //         ],
-        //       ),
-        //       Row(
-        //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //         children: <Widget>[
-        //           sizeBox(20.0, 10.0),
-        //           for(var i=6; i<10; i++)...[
-        //             ballNoImage(i),
-        //           ],
-        //           ballNoImage(0),
-        //         ],
-        //       )
-        //     ],
-        //   )
-        // ),
       ],
     );
   }
@@ -873,6 +885,36 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     }
   }
 
+  Widget createBallImage() {
+    return Container(
+        height: 80,
+        margin: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                for(var i=1; i<6; i++)...[
+                  ballNoImage(i),
+                ],
+                sizeBox(10.0, 20.0),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                sizeBox(20.0, 10.0),
+                for(var i=6; i<10; i++)...[
+                  ballNoImage(i),
+                ],
+                ballNoImage(0),
+              ],
+            )
+          ],
+        )
+    );
+  }
+
   /*==================================
   ============= method ===============
   ==================================*/
@@ -895,6 +937,17 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       tempList.add(tempNumberList);
     }
     return tempList;
+  }
+
+  checkBoxBool() {
+    var chkBool = true;
+    for(var i=0; i<isChecked.length-1; i++) {
+      if(isChecked[i] == false) {
+        chkBool = false;
+        break;
+      }
+    }
+    isChecked[5] = chkBool;
   }
   
   //=== 파일 저장 ===
@@ -958,22 +1011,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
       return null;
     }
     return null;
-  }
-
-  Future<void> createFileBySAF(String fileName, Uint8List uint8list) async {
-
-    /*From: shared_storage: ^0.2.0*/
-    Uri? uri = await openDocumentTree();
-
-    /*From: saf: ^1.0.3+3*/
-    Map<String, dynamic>? result = await MethodChannel('com.ivehement.plugins/saf/documentfile')
-                                          .invokeMapMethod<String, dynamic>('createFile', <String, dynamic>{
-      'mimeType': 'any',
-      'content': uint8list,
-      'displayName': fileName,
-      'directoryUri': '$uri',
-    });
-    print(result);
   }
 
   void numberPickerDialog(BuildContext context, paramNum, paramType) {
