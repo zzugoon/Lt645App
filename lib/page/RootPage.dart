@@ -967,8 +967,8 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
     // 데이터 저장하기
     Map<String, dynamic> data = {
-      // 'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
-      'date' : '2023-03-14',
+      'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      // 'date' : '2023-03-14',
       'idx1' : dataList[0]['number'],
       'idx2' : dataList[1]['number'],
       'idx3' : dataList[2]['number'],
