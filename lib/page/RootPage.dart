@@ -26,9 +26,14 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
 
   late List<List<bool>> partialSelections;
   late List<List<bool>> unPartialSelections;
+  late List<dynamic> numMapList;
 
-  List<dynamic> numList = [['1번','2번','3번','4번','5번','6번']];
-  List<dynamic> numMapList = [];
+  late List<bool> isSwitched;
+  late List<bool> isChecked;
+  late List<bool> isSaved;
+
+  late TabController _tabController;
+
   List<Map> tableHeader = [
     {'col' : 'A', 'type' : '자동'}
     ,{'col' : 'B', 'type' : '자동'}
@@ -36,9 +41,7 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
     ,{'col' : 'D', 'type' : '자동'}
     ,{'col' : 'E', 'type' : '자동'}
   ];
-
   String rangePercent = '1';
-  late TabController _tabController;
 
   TextEditingController getMinNum = TextEditingController(text: "1");
   TextEditingController getMaxNum = TextEditingController(text: "45");
@@ -46,17 +49,26 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   CommonDialog commonDialog = CommonDialog();
   CommonGenNumber commonGenNumber = CommonGenNumber();
 
-  List<bool> isSwitched = [true,false];
-  List<bool> isChecked = [true,true,true,true,true,true];
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    initData();
 
-    // toggle bool 리스트 생성
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  initData() {
+    // toggle bool 리스트
     partialSelections = initPartialSelections();
     unPartialSelections = initPartialSelections();
+
+    // table 생성번호 리스트
+    numMapList = [];
+
+    // boolian 변수 초기화
+    isSwitched = [true,false];
+    isChecked = [true,true,true,true,true,true];
+    isSaved = [false,false,false,false,false];
   }
 
   @override
@@ -209,16 +221,17 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                       ),
                       onPressed: () {
                         setState(() {
-                          if(_tabController.index == 0 ) {
-                            numMapList.clear();
-                            initRangeSelections();
-                          } else if(_tabController.index == 1) {
-                            numMapList.clear();
-                            partialSelections = initPartialSelections();
-                          } else if(_tabController.index == 2) {
-                            numMapList.clear();
-                            unPartialSelections = initPartialSelections();
-                          }
+                          initData();
+                          // if(_tabController.index == 0 ) {
+                          //   numMapList.clear();
+                          //   initRangeSelections();
+                          // } else if(_tabController.index == 1) {
+                          //   numMapList.clear();
+                          //   partialSelections = initPartialSelections();
+                          // } else if(_tabController.index == 2) {
+                          //   numMapList.clear();
+                          //   unPartialSelections = initPartialSelections();
+                          // }
                         });
                       },
                     ),
@@ -405,16 +418,18 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
           alignment: Alignment.center,
           child: ElevatedButton(
             style: TextButton.styleFrom(
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.grey ,
                 minimumSize: Size(50, 35)
             ),
-            child: const Text('저장',
+            child: Text('저장',
               style: TextStyle(
                 fontSize: 12,
+                color: isSaved[rowNo] ? Colors.black45 : Colors.white
               ),
             ),
             onPressed: () {
-              // print(numMapList[rowNo]);
+              if(isSaved[rowNo]) return;
+
               if(numMapList.length < rowNo+1){
                 Fluttertoast.showToast(
                     msg: '저장할 데이터가 없습니다',
@@ -428,6 +443,10 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
                 msg: '저장 되었습니다',
                 toastLength: Toast.LENGTH_SHORT
               );
+
+              setState(() {
+                isSaved[rowNo]  = true;
+              });
             },
           ),
         ),
@@ -538,6 +557,39 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
             ],
           ),
         ),
+        sizeBox(10.0, 5.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              height: 30,
+              child: const Text("당첨 확률 : ",
+                  style: TextStyle(
+                    // fontFamily: "on_goelip",
+                    //   fontSize: 10,
+                      fontWeight: FontWeight.normal
+                  )
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              height: 30,
+              child: Text('1 / $rangePercent',
+                  style: const TextStyle(
+                    // fontFamily: "on_goelip",
+                    //   fontSize: 10,
+                      fontWeight: FontWeight.normal
+                  )
+              ),
+            ),
+          ],
+        ),
+        sizeBox(10.0, 5.0),
+        const Divider(
+          height: 5,
+        ),
+        sizeBox(10.0, 5.0),
         Container(
           margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
           height: 30,
@@ -749,34 +801,6 @@ class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
               ),
             ],
           ),
-        ),
-        sizeBox(10.0, 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              height: 30,
-              child: const Text("당첨 확률 : ",
-                  style: TextStyle(
-                    // fontFamily: "on_goelip",
-                    //   fontSize: 10,
-                      fontWeight: FontWeight.normal
-                  )
-              ),
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              height: 30,
-              child: Text('1 / $rangePercent',
-                  style: const TextStyle(
-                    // fontFamily: "on_goelip",
-                    //   fontSize: 10,
-                      fontWeight: FontWeight.normal
-                  )
-              ),
-            ),
-          ],
         ),
       ],
     );

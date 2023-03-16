@@ -173,10 +173,10 @@ class _MyInfoPageState extends State<MyInfoPage> {
                         title: Text(listSubstance[i][j]),
                         trailing: const Icon(Icons.keyboard_arrow_right),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SaveNumberData()),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => const SaveNumberData()),
+                          // );
 
                           setState(() {
 
