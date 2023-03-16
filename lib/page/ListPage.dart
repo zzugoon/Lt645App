@@ -148,64 +148,90 @@ class _ListPageState extends State<ListPage> {
     for(var j=0; j<numberList.length; j++) {
       tempWidget =
         SizedBox.expand(
-          child: ListView(
+          child: ListView.builder(
             padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
-            children: [
-              for(var i=0; i<numberList[j].length; i++)...[
-                Card(
-                  shadowColor: Colors.grey,
-                  // margin: EdgeInsets.only(left: 5,right: 5 ,top: 5, bottom: 5),
-                  elevation: 5.0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0,right: 10.0, top: 10.0, bottom: 1.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 10.0, left: 5.0),
-                          child: Text(numberList[j][i]['date']),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              numberRow(numberList[j][i]['idx1'], numberList[j][i]['color1']),
-                              numberRow(numberList[j][i]['idx2'], numberList[j][i]['color2']),
-                              numberRow(numberList[j][i]['idx3'], numberList[j][i]['color3']),
-                              numberRow(numberList[j][i]['idx4'], numberList[j][i]['color4']),
-                              numberRow(numberList[j][i]['idx5'], numberList[j][i]['color5']),
-                              numberRow(numberList[j][i]['idx6'], numberList[j][i]['color6']),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+            shrinkWrap: true,
+            itemCount: numberList[j].length,
+            itemBuilder: (context, index) {
+              return Card(
+                shadowColor: Colors.grey,
+                // margin: EdgeInsets.only(left: 5,right: 5 ,top: 5, bottom: 5),
+                elevation: 5.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0,right: 10.0, top: 10.0, bottom: 1.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 10.0, left: 5.0),
+                        child: Text(numberList[j][index]['date']),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            TextButton(
-                              onPressed: () {
-                                showFlexibleBottomSheet(
-                                  draggableScrollableController: DraggableScrollableController(),
-                                  bottomSheetColor: Colors.white,
-                                  minHeight: 0,
-                                  initHeight: 0.8,
-                                  maxHeight: 0.8,
-                                  context: context,
-                                  builder: _buildBottomSheet,
-                                  isExpand: false,
-                                );
-                              },
-                              child: const Text('보기')
-                            ),
+                            numberRow(numberList[j][index]['idx1'], numberList[j][index]['color1']),
+                            numberRow(numberList[j][index]['idx2'], numberList[j][index]['color2']),
+                            numberRow(numberList[j][index]['idx3'], numberList[j][index]['color3']),
+                            numberRow(numberList[j][index]['idx4'], numberList[j][index]['color4']),
+                            numberRow(numberList[j][index]['idx5'], numberList[j][index]['color5']),
+                            numberRow(numberList[j][index]['idx6'], numberList[j][index]['color6']),
                           ],
                         ),
-                      ],
-                    ),
-                  )
-                ),
-              ]
-            ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              showFlexibleBottomSheet(
+                                draggableScrollableController: DraggableScrollableController(),
+                                bottomSheetColor: Colors.white,
+                                minHeight: 0,
+                                initHeight: 0.8,
+                                maxHeight: 0.8,
+                                context: context,
+                                builder: (BuildContext context,
+                                  ScrollController scrollController,
+                                  double bottomSheetOffset) {
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.45,
+                                    child: Container(
+                                        color: Colors.cyanAccent,
+                                        margin: EdgeInsets.all(20.0),
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(bottom: 10.0),
+                                              child: Text('번호선택 작성 표'),
+                                            ),
+                                            for(var i=0; i<insSheetNumList.length; i++)...[
+                                              const SizedBox(
+                                                height: 5.0,
+                                              ),
+                                              createSheetRow(insSheetNumList[i], numberList[j][index]),
+                                            ]
+                                          ],
+                                        )
+                                    ),
+                                  );
+                                },
+                                isExpand: false,
+                              );
+                            },
+                            child: const Text('보기')
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              );
+            },
           ),
         );
 
@@ -216,7 +242,7 @@ class _ListPageState extends State<ListPage> {
     return resultList; 
   }
 
-  Widget _buildBottomSheet(
+  /*Widget _buildBottomSheet(
       BuildContext context, ScrollController scrollController, double bottomSheetOffset) {
     return SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
@@ -241,16 +267,20 @@ class _ListPageState extends State<ListPage> {
           )
         ),
       );
-  }
+  }*/
 
-  createSheetRow(paramList) {
+  createSheetRow(paramList, paramMap) {
+    List tempList = [];
+    for(var i=1; i<=6; i++) {
+      tempList.add(paramMap['idx$i']);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         for(var i=0; i<paramList.length; i++)
           if(paramList[i] < 46)...[
-            createSheetRowText(paramList[i])
+            createSheetRowText(paramList[i], tempList)
           ]else...[
             Container(width: 28, height: 28,)
           ]
@@ -258,13 +288,15 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  createSheetRowText(param) {
+  createSheetRowText(param, List numList) {
+    var numParam = numList.contains(param.toString());
     return Container(
       width: 28,
       height: 28,
       decoration: BoxDecoration(
           border: Border.all(width: 1),
           shape: BoxShape.rectangle,
+          color: numParam ? Colors.black54 : null,
           // You can use like this way or like the below line
           //borderRadius: new BorderRadius.circular(30.0),
           // color: changePartialColor(idx, listIndex, selections)
