@@ -38,7 +38,7 @@ class _ResultPage extends State<ResultPage> {
     );
     return Scaffold(
       body: InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
+        initialUrlRequest: URLRequest(url: WebUri(widget.url)),
         initialOptions: InAppWebViewGroupOptions(
           // crossPlatform: InAppWebViewOptions(
           // ),
